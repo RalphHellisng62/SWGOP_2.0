@@ -1,7 +1,6 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <HelloWorld />
+  <div class="min-h-screen bg-[url('/coleccion.jpg')] bg-cover bg-center bg-fixed">
+
+  <router-view />
+  </div>
 </template>
