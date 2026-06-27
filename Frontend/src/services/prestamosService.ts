@@ -5,6 +5,15 @@ export const prestamosService = {
     return api.get('/prestamos/');
   },
 
+  obtenerLibrosDisponibles() {
+  return api.get('/libros/');
+},
+
+  registrarPrestamo(datos: any) {
+    return api.post('/prestamos/', datos);
+  },
+
+
   obtenerPrestamo(id: number) {
     return api.get(`/prestamos/${id}/`);
   },

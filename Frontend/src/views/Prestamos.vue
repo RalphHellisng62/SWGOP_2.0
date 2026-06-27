@@ -152,7 +152,9 @@ const getEstadoLabel = (estado: string) => {
 };
 
 const formatearFecha = (fecha: string) => {
-  const date = new Date(fecha);
+  // Parsear la fecha evitando problemas de zona horaria
+  const [year, month, day] = fecha.split('T')[0].split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 

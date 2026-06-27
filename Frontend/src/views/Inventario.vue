@@ -193,7 +193,8 @@ const irAgregarLibro = () => {
 };
 
 const libroAgregado = () => {
-  cargarLibros();
+  console.log('Libro agregado, recargando...');
+  cargarLibros();  
   mostrarModal.value = false;
 };
 

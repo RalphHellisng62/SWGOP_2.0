@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import User
 from .models import PerfilUsuario, RecuperacionContraseña
+
 
 class UsuarioSerializer(serializers.ModelSerializer):
     foto = serializers.SerializerMethodField()
@@ -21,9 +23,23 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return None
 
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+class LoginSerializer(TokenObtainPairSerializer):
+    """
+    Personalizado TokenObtainPairSerializer para devolver access y refresh tokens
+    """
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        # Agregar info del usuario a la respuesta
+        user = self.user
+        data['user'] = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        }
+        
+        return data
 
 
 class RegistroSerializer(serializers.ModelSerializer):

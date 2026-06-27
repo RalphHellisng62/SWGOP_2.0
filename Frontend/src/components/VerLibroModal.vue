@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { librosService } from '../services/librosService';
+import { FolderArrowDownIcon, ArrowLeftCircleIcon } from '@heroicons/vue/24/solid';
 
 interface Libro {
   id: number;
@@ -64,6 +65,8 @@ const cargarLibro = async () => {
   cargando.value = true;
   try {
     const response = await librosService.obtenerLibro(props.libroId);
+    console.log('📸 Respuesta API:', response.data);
+    console.log('📸 Campo foto:', response.data.foto);
     libro.value = response.data;
     
     // Llenar campos editables
@@ -108,6 +111,7 @@ const handleFoto = (event: Event) => {
 const guardarCambios = async () => {
   if (!nt.value || !titulo.value || !autor.value) {
     error.value = 'Completa los campos obligatorios';
+    console.log('Campos vacios');
     return;
   }
   
@@ -115,34 +119,19 @@ const guardarCambios = async () => {
   error.value = '';
   
   try {
-    // Si hay foto nueva, usar FormData
-    if (fotoFile.value instanceof File) {
-      const formData = new FormData();
-      formData.append('nt', nt.value);
-      formData.append('etiqueta', etiqueta.value);
-      formData.append('titulo', titulo.value);
-      formData.append('autor', autor.value);
-      formData.append('categoria', categoria.value);
-      formData.append('ejemplares', ejemplares.value.toString());
-      formData.append('estado', estado.value);
-      formData.append('foto', fotoFile.value);
-      
-      await librosService.actualizarLibro(props.libroId, formData);
-    } else {
-      // Si NO hay foto nueva, enviar como JSON
-      const datos = {
-        nt: nt.value,
-        etiqueta: etiqueta.value,
-        titulo: titulo.value,
-        autor: autor.value,
-        categoria: categoria.value,
-        ejemplares: ejemplares.value,
-        estado: estado.value,
-      };
-      
-      await librosService.actualizarLibro(props.libroId, datos);
-    }
-    
+    console.log('Intentando guardar..');
+  const datosActualizados = {
+  nt: nt.value,
+  etiqueta: etiqueta.value,
+  titulo: titulo.value,
+  autor: autor.value,
+  categoria: categoria.value,
+  ejemplares: ejemplares.value,
+  estado: estado.value,
+  foto: fotoFile.value
+};
+
+await librosService.actualizarLibro(props.libroId, datosActualizados);
     exito.value = true;
     setTimeout(() => {
       modoEdicion.value = false;
@@ -153,6 +142,7 @@ const guardarCambios = async () => {
       }, 1000);
     }, 1000);
   } catch (err: any) {
+    console.log('Error capturado:', err);
     error.value = err.response?.data?.detail || 'Error al guardar cambios';
   } finally {
     guardando.value = false;
@@ -193,20 +183,20 @@ const decrementar = () => {
   <!-- Backdrop -->
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
     <!-- Modal -->
-    <div v-if="!cargando && libro" class="bg-white rounded-lg w-full max-w-3xl max-h-[85vh] overflow-y-auto shadow-2xl">
+    <div v-if="!cargando && libro" class="bg-white rounded-3xl w-full max-w-4xl max-h-[95vh] overflow-y-auto shadow-2xl">
       
       <!-- Header -->
-      <div class="bg-black/30 backdrop-blur-sm px-8 py-6 sticky top-0 border-b border-gray-200 flex justify-between items-center">
+      <div class="bg-[#344F37] backdrop-blur-sm px-8 py-6 sticky top-0 border-b border-[#344F37] flex justify-between items-center">
         <h2 class="text-3xl font-bold text-white">Información completa del libro</h2>
         
         <!-- Toggle Modo Edición -->
-        <div class="flex items-center gap-3 bg-white/90 rounded-lg px-4 py-2">
-          <span class="text-sm text-gray-600">Modo edición</span>
+        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-2">
+          <span class="text-sm text-[#344F37]">Modo edición</span>
           <button
             @click="modoEdicion = !modoEdicion"
             :class="[
               'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-              modoEdicion ? 'bg-[#8B3A5C]' : 'bg-gray-300'
+              modoEdicion ? 'bg-[#011956]' : 'bg-[#4EBFD9]'
             ]"
           >
             <span
@@ -252,7 +242,7 @@ const decrementar = () => {
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
-                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                   modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
@@ -266,7 +256,7 @@ const decrementar = () => {
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
-                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                   modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
@@ -280,7 +270,7 @@ const decrementar = () => {
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
-                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                   modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
@@ -294,7 +284,7 @@ const decrementar = () => {
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
-                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                   modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
@@ -307,7 +297,7 @@ const decrementar = () => {
                 v-model="categoria"
                 :disabled="!modoEdicion"
                 :class="[
-                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                  'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                   modoEdicion ? 'bg-white border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               >
@@ -325,7 +315,7 @@ const decrementar = () => {
                   v-model="estado"
                   :disabled="!modoEdicion"
                   :class="[
-                    'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]',
+                    'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
                     modoEdicion ? 'bg-white border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                   ]"
                 >
@@ -341,7 +331,7 @@ const decrementar = () => {
                   <button 
                     type="button"
                     @click="decrementar"
-                    class="bg-gray-300 hover:bg-gray-400 w-8 h-8 rounded flex items-center justify-center font-bold text-gray-700"
+                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold"
                   >
                     −
                   </button>
@@ -349,7 +339,7 @@ const decrementar = () => {
                   <button 
                     type="button"
                     @click="incrementar"
-                    class="bg-[#8B3A5C] hover:bg-[#6D2D46] text-white w-8 h-8 rounded flex items-center justify-center font-bold"
+                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold"
                   >
                     +
                   </button>
@@ -366,12 +356,12 @@ const decrementar = () => {
             <label class="block text-sm font-semibold text-gray-700 mb-2">Foto del libro</label>
             <div 
               :class="[
-                'border-2 border-dashed rounded-lg p-6 min-h-64 flex flex-col items-center justify-center',
-                modoEdicion ? 'border-[#8B3A5C] bg-white' : 'border-gray-300 bg-gray-50'
+                'border-2 border-dashed border-[#D9298A] rounded-lg p-0 h-130 flex flex-col items-center justify-center bg-white',
+                modoEdicion ? 'border-[#D9298A] bg-white' : 'border-gray-300 bg-gray-50'
               ]"
             >
               <!-- Foto -->
-              <img v-if="fotoPreview" :src="fotoPreview" alt="Libro" class="w-full h-full max-h-56 object-contain mb-4" />
+              <img v-if="fotoPreview" :src="fotoPreview" alt="Libro" class="w-full h-full max-h-115 object-contain mb-0" />
               
               <!-- Sin foto -->
               <div v-else class="text-center">
@@ -385,10 +375,8 @@ const decrementar = () => {
 
               <!-- Botones de carga (solo en modo edición) -->
               <div v-if="modoEdicion" class="flex gap-3 justify-center w-full flex-wrap mt-4">
-                <label class="flex items-center gap-2 text-[#8B3A5C] hover:text-[#6D2D46] font-semibold transition cursor-pointer">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm4 2a1 1 0 11-2 0 1 1 0 012 0z"/>
-                  </svg>
+                <label class="flex items-center gap-2 font-semibold transition cursor-pointer">
+                  <FolderArrowDownIcon class="icono" />
                   Explorador
                   <input 
                     type="file"
@@ -397,30 +385,46 @@ const decrementar = () => {
                     class="hidden"
                   />
                 </label>
-                <span class="text-gray-300">•</span>
-                <a href="#" class="text-[#8B3A5C] hover:text-[#6D2D46] font-semibold underline transition">
-                  Cargar de imagen desde el navegador
-                </a>
+
               </div>
             </div>
           </div>
 
         </div>
 
+        <!-- Línea decorativa -->
+  <div class="relative mb-6 mt-10">
+    <div class="min-h-0.5 bg-[#344F37] relative">
+
+      <!-- Punto izquierdo -->
+      <div
+        class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2
+              w-2 h-2 rounded-full bg-[#344F37]">
+      </div>
+
+      <!-- Punto derecho -->
+      <div
+        class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2
+              w-2 h-2 rounded-full bg-[#344F37]">
+      </div>
+
+    </div>
+  </div>
         <!-- Botones de acción -->
-        <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div class="flex justify-between items-center">
           <button 
             @click="cerrar"
-            class="flex items-center gap-2 text-[#8B3A5C] font-semibold hover:text-[#6D2D46] transition"
+            class="flex items-center gap-2 text-[#344F37] hover:text-[#98BF45] transition underline"
           >
-            ← Regresar
+          <ArrowLeftCircleIcon class="icono" />
+          Regresar
           </button>
           
           <div v-if="modoEdicion" class="flex gap-4">
             <button 
               @click="cancelarEdicion"
               type="button"
-              class="px-6 py-2 border border-gray-300 text-gray-700 font-semibold rounded hover:border-[#8B3A5C] transition"
+              class="px-6 py-2 bg-[#D9298A] font-semibold rounded text-white hover:bg-[#690035] transition"
             >
               Cancelar
             </button>
@@ -428,7 +432,7 @@ const decrementar = () => {
               @click="guardarCambios"
               :disabled="guardando"
               type="button"
-              class="px-6 py-2 bg-[#8B3A5C] hover:bg-[#6D2D46] text-white font-semibold rounded transition disabled:opacity-50"
+              class="px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded transition disabled:opacity-50"
             >
               {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
             </button>

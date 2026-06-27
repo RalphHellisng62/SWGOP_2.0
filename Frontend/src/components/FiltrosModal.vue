@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MinusIcon, PlusIcon } from '@heroicons/vue/24/solid';
 import { ref } from 'vue';
 
 interface Filtros {
@@ -17,10 +18,32 @@ const emit = defineEmits<{
   aplicar: [filtros: Filtros];
 }>();
 
-const ordenar = ref<'A-Z' | 'Z-A'>('A-Z');
-const estadoSeleccionados = ref<string[]>(['enInventario']);
-const ejemplares = ref(1);
-const categoriasSeleccionadas = ref<string[]>([]);
+const filtrosGuardados = localStorage.getItem('filtrosInventario');
+
+const filtrosIniciales: Filtros = filtrosGuardados
+  ? JSON.parse(filtrosGuardados)
+  : {
+      ordenar: 'A-Z',
+      estado: [],
+      ejemplares: 0,
+      categorias: [],
+    };
+
+const ordenar = ref<'A-Z' | 'Z-A'>(
+  filtrosIniciales.ordenar
+);
+
+const estadoSeleccionados = ref<string[]>(
+  filtrosIniciales.estado
+);
+
+const ejemplares = ref(
+  filtrosIniciales.ejemplares
+);
+
+const categoriasSeleccionadas = ref<string[]>(
+  filtrosIniciales.categorias
+);
 
 const categorias = [
   '000-Generalidades',
@@ -86,10 +109,10 @@ const decrementar = () => {
   <!-- Backdrop -->
   <div v-if="modelValue" class="fixed inset-0 bg-black/50 z-50 flex items-start justify-end">
     <!-- Panel lateral -->
-    <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-lg">
+    <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-lg rounded-2xl">
       
       <!-- Header -->
-      <div class="bg-[#8B3A5C] px-6 py-4 flex justify-between items-center sticky top-0">
+      <div class="bg-[#344F37] px-6 py-4 flex justify-between items-center sticky top-0 z-20">
         <h2 class="text-lg font-bold text-white">Búsqueda por filtros</h2>
         <button 
           @click="cerrar"
@@ -106,14 +129,14 @@ const decrementar = () => {
         
         <!-- Ordenar por -->
         <div>
-          <h3 class="font-semibold text-gray-800 mb-3">Ordenar por...</h3>
+          <h3 class="font-semibold text-black mb-3">Ordenar por...</h3>
           <div class="space-y-2">
             <label class="flex items-center cursor-pointer">
               <input 
                 v-model="ordenar"
                 type="radio"
                 value="A-Z"
-                class="w-4 h-4 text-[#8B3A5C] cursor-pointer"
+                class="w-4 h-4 accent-[#011956] cursor-pointer"
               />
               <span class="ml-3 text-gray-700">A-Z</span>
             </label>
@@ -122,12 +145,17 @@ const decrementar = () => {
                 v-model="ordenar"
                 type="radio"
                 value="Z-A"
-                class="w-4 h-4 text-[#8B3A5C] cursor-pointer"
+                class="w-4 h-4 accent-[#011956] cursor-pointer"
               />
               <span class="ml-3 text-gray-700">Z-A</span>
             </label>
           </div>
-          <div class="border-b border-gray-300 mt-4"></div>
+           <div class="relative mt-3">
+        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        </div>
+      </div>
         </div>
 
         <!-- Estado -->
@@ -139,33 +167,44 @@ const decrementar = () => {
                 :checked="estadoSeleccionados.includes(estado)"
                 @change="toggleEstado(estado)"
                 type="checkbox"
-                class="w-4 h-4 text-[#8B3A5C] rounded cursor-pointer"
+                class="w-4 h-4 accent-[#011956] rounded cursor-pointer"
               />
               <span class="ml-3 text-gray-700">{{ estadoLabels[estado] }}</span>
             </label>
           </div>
-          <div class="border-b border-gray-300 mt-4"></div>
+           <div class="relative mt-3">
+        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        </div>
+      </div>
         </div>
 
         <!-- Ejemplares -->
         <div>
           <h3 class="font-semibold text-gray-800 mb-3">Ejemplares</h3>
-          <div class="flex items-center justify-center gap-4">
+          <div class="flex items-center justify-center gap-8">
             <button 
               @click="decrementar"
-              class="bg-gray-300 hover:bg-gray-400 w-10 h-10 rounded flex items-center justify-center font-bold text-gray-700 transition"
+              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition"
             >
-              −
+            <MinusIcon class="w-5 h-5 text-white" />
             </button>
             <span class="text-center w-12 text-gray-800 font-semibold text-lg">{{ ejemplares }}</span>
             <button 
               @click="incrementar"
-              class="bg-[#8B3A5C] hover:bg-[#6D2D46] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition"
+              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition"
             >
-              +
+            <PlusIcon class="w-5 h-5 text-white" />
+
             </button>
           </div>
-          <div class="border-b border-gray-300 mt-4"></div>
+           <div class="relative mt-3">
+        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        </div>
+      </div>
         </div>
 
         <!-- Categoría -->
@@ -177,18 +216,23 @@ const decrementar = () => {
                 :checked="categoriasSeleccionadas.includes(cat)"
                 @change="toggleCategoria(cat)"
                 type="checkbox"
-                class="w-4 h-4 text-[#8B3A5C] rounded cursor-pointer"
+                class="w-4 h-4 border-2 border-[#011956] accent-[#011956] rounded cursor-pointer"
               />
               <span class="ml-3 text-gray-700 text-sm">{{ cat }}</span>
             </label>
           </div>
-          <div class="border-b border-gray-300 mt-4"></div>
+          <div class="relative mt-3">
+        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        </div>
+      </div>
         </div>
 
         <!-- Botón Aplicar -->
         <button 
           @click="aplicarFiltros"
-          class="w-full bg-[#8B3A5C] hover:bg-[#6D2D46] text-white font-semibold py-3 rounded transition"
+          class="w-full bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold py-3 rounded transition"
         >
           Aplicar
         </button>
@@ -197,7 +241,3 @@ const decrementar = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Estilos opcionales para mejorar la apariencia */
-</style>

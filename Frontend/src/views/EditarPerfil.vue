@@ -261,7 +261,7 @@ const obtenerUrlFoto = (foto?: string) => {
           </div>
         </div>
 
-          <div class="pt-4 border-t">
+          <div class="pt-1">
 
             <h3 class="font-bold text-lg mb-4 text-gray-800">
               Cambiar contraseña

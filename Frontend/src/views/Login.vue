@@ -29,8 +29,14 @@ const iniciarSesion = async () => {
       password: contraseña.value
     });
 
+    // DEBUG: Ver qué devuelve el servidor
+    console.log('🔍 RESPUESTA COMPLETA:', response);
+    console.log('🔍 response.data:', response.data);
+    console.log('🔍 Claves disponibles:', Object.keys(response.data || {}));
+
     // Validación más segura de la respuesta
     if (!response.data?.access || !response.data?.refresh) {
+      console.error('❌ Estructura inesperada. Esperamos access y refresh, pero tenemos:', response.data);
       throw new Error('Respuesta inválida del servidor');
     }
 
@@ -40,6 +46,8 @@ const iniciarSesion = async () => {
       response.data.usuario || response.data.user
     );
 
+    console.log('✅ Tokens guardados correctamente');
+
     loginExitoso.value = true;
     
     // Pequeño delay para mostrar mensaje de éxito
@@ -48,9 +56,13 @@ const iniciarSesion = async () => {
     }, 800);
 
   } catch (err: any) {
-    console.error('Error de login:', err);
+    console.error('❌ Error de login:', err);
+    console.error('❌ Response status:', err.response?.status);
+    console.error('❌ Response data:', err.response?.data);
+    
     error.value = err.response?.data?.detail 
       || err.response?.data?.message 
+      || err.message
       || 'Credenciales incorrectas. Inténtalo de nuevo.';
   } finally {
     cargando.value = false;

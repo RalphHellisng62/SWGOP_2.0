@@ -15,7 +15,7 @@ const titulo = ref('');
 const autor = ref('');
 const categoria = ref('000-Generalidades');
 const estado = ref('enInventario');
-const ejemplares = ref(0);
+const ejemplares = ref(1);
 const fotoFile = ref<File | null>(null);
 const fotoUrl = ref('');
 const fotoPreview = ref('');
@@ -29,11 +29,11 @@ const categorias = [
   '300-Ciencias Sociales',
   '400-Lenguas',
   '500-Ciencias naturales y matemáticas',
-  '600-Tegnología (Ciencia aplicadas)',
+  '600-Tecnología (Ciencia aplicadas)',
   '700-Bellas artes',
-  '800-Literatura y retorica',
-  '900-Geográfia e Historia',
-  'Prestamo a domicilio',
+  '800-Literatura y retórica',
+  '900-Geografía e Historia',
+  'Préstamo a domicilio',
 ];
 
 const validarFormato = (url: string): boolean => {
@@ -101,6 +101,7 @@ const agregarLibro = async () => {
   cargando.value = true;
   
   try {
+    
     // Si hay foto (archivo o URL), usar FormData
     if (fotoFile.value instanceof File || fotoUrl.value) {
       const formData = new FormData();
@@ -110,10 +111,18 @@ const agregarLibro = async () => {
       formData.append('autor', autor.value);
       formData.append('categoria', categoria.value);
       formData.append('estado', estado.value);
-      formData.append('ejemplares', ejemplares.value.toString());
+      formData.append('ejemplares', String(ejemplares.value));
+      // DEBUG: Ver qué está en FormData
+  console.log('📋 FormData entries:');
+  for (let [key, value] of formData.entries()) {
+    console.log(`  ${key}:`, value);
+  }
+  
       
+
       if (fotoFile.value instanceof File) {
         formData.append('foto', fotoFile.value);
+        console.log('📸 Agregando foto al FormData:', fotoFile.value.name);
       } else if (fotoUrl.value) {
         formData.append('foto_url', fotoUrl.value);
       }
@@ -128,9 +137,10 @@ const agregarLibro = async () => {
         autor: autor.value,
         categoria: categoria.value,
         estado: estado.value,
-        ejemplares: ejemplares.value,
+        ejemplares: Number(ejemplares.value),
       };
       
+      console.log('📤 Enviando JSON:', datos);
       await librosService.crearLibro(datos);
     }
     
@@ -140,7 +150,8 @@ const agregarLibro = async () => {
       cerrar();
     }, 1500);
   } catch (err: any) {
-    error.value = err.response?.data?.detail || 'Error al agregar libro';
+    console.error('❌ Error al agregar libro:', err.response?.data);
+    error.value = err.response?.data?.detail || JSON.stringify(err.response?.data) || 'Error al agregar libro';
   } finally {
     cargando.value = false;
   }
@@ -153,7 +164,7 @@ const cerrar = () => {
   autor.value = '';
   categoria.value = '000-Generalidades';
   estado.value = 'enInventario';
-  ejemplares.value = 0;
+  ejemplares.value = 1;
   fotoFile.value = null;
   fotoUrl.value = '';
   fotoPreview.value = '';
@@ -168,7 +179,7 @@ const incrementar = () => {
 };
 
 const decrementar = () => {
-  if (ejemplares.value > 0) ejemplares.value--;
+  if (ejemplares.value > 1) ejemplares.value--;
 };
 </script>
 
@@ -282,7 +293,7 @@ const decrementar = () => {
               </div>
 
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Cantidad en el inventario</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Ejemplares</label>
                 <div class="flex items-center gap-2">
                   <button 
                     type="button"
@@ -334,13 +345,46 @@ const decrementar = () => {
                     class="hidden"
                   />
                 </label>
-                <span class="text-gray-300">•</span>
-               
+                <button
+                  type="button"
+                  @click="mostrarDialogUrl = true"
+                  class="flex items-center gap-2 font-semibold px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition"
+                >
+                  URL
+                </button>
               </div>
             </div>
           </div>
 
         </form>
+
+        <div v-if="mostrarDialogUrl" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
+            <h3 class="text-xl font-semibold mb-4">Ingresar URL de la imagen</h3>
+            <input
+              v-model="fotoUrl"
+              type="text"
+              placeholder="https://example.com/imagen.jpg"
+              class="w-full px-4 py-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+            />
+            <div class="flex justify-end gap-3">
+              <button
+                type="button"
+                @click="cerrarDialogUrl"
+                class="px-5 py-2 border border-gray-300 rounded hover:bg-gray-100 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                @click="handleFotoUrl"
+                class="px-5 py-2 bg-[#344F37] text-white rounded hover:bg-[#98BF45] transition"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
 
           <!-- Línea decorativa -->
   <div class="relative mb-6 mt-10">
@@ -386,33 +430,6 @@ const decrementar = () => {
               {{ cargando ? 'Agregando...' : 'Agregar' }}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dialog para cargar desde URL (Modal tradicional) -->
-    <div v-if="mostrarDialogUrl" class="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
-      <div class="bg-white rounded-lg p-8 w-full max-w-md shadow-2xl">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Cargar imagen desde URL</h3>
-        <input 
-          v-model="fotoUrl"
-          type="text"
-          placeholder="Ej: https://ejemplo.com/imagen.jpg"
-          class="w-full px-4 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
-        />
-        <div class="flex gap-4 justify-end">
-          <button 
-            @click="cerrarDialogUrl"
-            class="px-6 py-2 bg-[#D9298A] font-semibold rounded hover:bg-[#690035] transition text-white"
-          >
-            Cancelar
-          </button>
-          <button 
-            @click="handleFotoUrl"
-            class="px-6 py-2 bg-[#344F37] text-white rounded hover:bg-[#98BF45] transition"
-          >
-            Cargar
-          </button>
         </div>
       </div>
     </div>
