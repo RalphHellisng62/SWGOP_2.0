@@ -77,11 +77,27 @@ const handleFoto = (event: Event) => {
   reader.readAsDataURL(file);
 };
 
+// Validar formato de email
+const validarEmail = (emailValue: string): boolean => {
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regexEmail.test(emailValue);
+};
+
 const guardarPerfil = async () => {
   error.value = '';
 
   if (!username.value.trim()) {
     error.value = 'El nombre de usuario es obligatorio';
+    return;
+  }
+
+  if (!email.value.trim()) {
+    error.value = 'El correo es obligatorio';
+    return;
+  }
+
+  if (!validarEmail(email.value)) {
+    error.value = 'Ingrese un correo válido (ej: usuario@gmail.com, usuario@outlook.com)';
     return;
   }
 
@@ -235,9 +251,10 @@ const obtenerUrlFoto = (foto?: string) => {
             <input 
               v-model="email"
               type="email"
-              placeholder="Ejemplo: presidentsanJose"
+              placeholder="Ejemplo: usuario@gmail.com"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37]"
             />
+            <p class="text-xs text-gray-500 mt-1">Aceptamos: Gmail, Outlook, Yahoo, Hotmail, etc.</p>
           </div>
 
           <!-- CONTRASEÑAS -->

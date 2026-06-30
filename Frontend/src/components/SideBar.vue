@@ -4,10 +4,11 @@ import { authService } from '../services/authService';
 import { useUsuario } from '../composables/useUsuario';
 import { 
   ArrowRightStartOnRectangleIcon, 
-  BookmarkIcon, 
   BookOpenIcon, 
   ChevronDoubleLeftIcon, 
-  ChevronDoubleRightIcon 
+  ChevronDoubleRightIcon,
+  ClipboardDocumentListIcon, 
+  
 } from '@heroicons/vue/24/solid';
 import router from '../router';
 import { useRoute } from 'vue-router';
@@ -176,7 +177,7 @@ const obtenerUrlFoto = (foto?: string) => {
           'w-full font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300'
         ]"
       >
-        <BookmarkIcon class="w-6 h-6" />
+        <ClipboardDocumentListIcon class="w-6 h-6" />
         <span v-if="abierto">Préstamos</span>
       </button>
     </div>

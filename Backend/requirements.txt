@@ -1,0 +1,6 @@
+django
+djangorestframework
+mongoengine
+django-cors-headers
+djangorestframework-simplejwt
+Pillow

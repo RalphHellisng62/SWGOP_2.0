@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-
+from mongoengine import connect 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -57,6 +57,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+
+# Conectar a MongoDB
+connect('SWGOP', host='mongodb://localhost:27017/')
 
 DATABASES = {
     'default': {

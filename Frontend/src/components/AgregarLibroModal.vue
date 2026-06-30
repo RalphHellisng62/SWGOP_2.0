@@ -318,7 +318,7 @@ const decrementar = () => {
           <!-- Columna derecha - Foto -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Foto del libro</label>
-            <div class="border-2 border-dashed border-[#8B3A5C] rounded-lg p-0 h-130 flex flex-col items-center justify-center bg-white">
+            <div class="border-2 border-dashed border-[#D9298A] rounded-lg p-0 h-130 flex flex-col items-center justify-center bg-white">
               
               <!-- Preview de foto -->
               <img v-if="fotoPreview" :src="fotoPreview" alt="Preview" class="w-full h-full max-h-115 object-contain mb-4" />
@@ -345,13 +345,7 @@ const decrementar = () => {
                     class="hidden"
                   />
                 </label>
-                <button
-                  type="button"
-                  @click="mostrarDialogUrl = true"
-                  class="flex items-center gap-2 font-semibold px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition"
-                >
-                  URL
-                </button>
+                
               </div>
             </div>
           </div>

@@ -257,8 +257,8 @@ onMounted(() => {
               :class="[
                 'px-6 py-2 rounded-full font-semibold transition',
                 filtroActual === 'vigentes'
-                  ? 'bg-[#F2B035] text-white shadow-lg'
-                  : 'bg-white text-gray-700 border'
+                  ? 'bg-[#F27B35] text-white shadow-lg hover:bg-[#F2B035]'
+                  : 'bg-white text-[#F27B35]'
               ]"
             >
               Vigentes
@@ -268,8 +268,8 @@ onMounted(() => {
               :class="[
                 'px-6 py-2 rounded-full font-semibold transition',
                 filtroActual === 'vencidos'
-                  ? 'bg-[#D9298A] text-white shadow-lg'
-                  : 'bg-white text-gray-700 border'
+                  ? 'bg-[#D9298A] text-white shadow-lg hover:bg-[#690035]'
+                  : 'bg-white text-[#D9298A]'
               ]"
             >
               Vencidos
@@ -279,8 +279,8 @@ onMounted(() => {
               :class="[
                 'px-6 py-2 rounded-full font-semibold transition',
                 filtroActual === 'devueltos'
-                  ? 'bg-[#344F37] text-white shadow-lg'
-                  : 'bg-white text-gray-700 border'
+                  ? 'bg-[#98BF45] text-white shadow-lg hover:bg-[#344F37]'
+                  : 'bg-white text-[#344F37]'
               ]"
             >
               Devueltos
@@ -347,15 +347,26 @@ onMounted(() => {
                 Libro prestado: {{ formatearFecha(prestamo.fecha_prestamo) }}
               </p>
 
-              <!-- Estado y fecha de devolución -->
-              <div class="flex items-center justify-between pb-4 border-b border-gray-200">
-                <span :class="['text-sm font-semibold', getEstadoColor(prestamo.estado)]">
-                  {{ getEstadoLabel(prestamo.estado) }}
-                </span>
-                <span class="text-xs text-gray-500">
-                  Vence: {{ formatearFecha(prestamo.fecha_devolucion) }}
-                </span>
+          <!-- Estado y fecha de devolución -->
+          <div class="pb-2">
+            <div class="flex items-center justify-between">
+              <span :class="['text-sm font-semibold', getEstadoColor(prestamo.estado)]">
+                {{ getEstadoLabel(prestamo.estado) }}
+              </span>
+
+              <span class="text-xs text-gray-500">
+                Vence: {{ formatearFecha(prestamo.fecha_devolucion) }}
+              </span>
+            </div>
+
+            <!-- Línea verde -->
+            <div class="relative mt-3 w-full">
+              <div class="h-0.5 w-full bg-[#98BF45] rounded-full">
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#98BF45]"></div>
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#98BF45]"></div>
               </div>
+            </div>
+          </div>
 
               <!-- Acciones -->
               <div class="flex gap-2 justify-end mt-4">
