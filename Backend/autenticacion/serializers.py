@@ -24,21 +24,14 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(TokenObtainPairSerializer):
-    """
-    Personalizado TokenObtainPairSerializer para devolver access y refresh tokens
-    """
-    
     def validate(self, attrs):
         data = super().validate(attrs)
-        
-        # Agregar info del usuario a la respuesta
         user = self.user
         data['user'] = {
             'id': user.id,
             'username': user.username,
             'email': user.email
         }
-        
         return data
 
 

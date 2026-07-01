@@ -1,0 +1,22 @@
+# Variables de entorno
+.env
+.env.local
+*.env
+
+# Node
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+
+# Django
+db.sqlite3
+media/
+
+# IDE
+.vscode/
+.idea/
