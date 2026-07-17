@@ -228,7 +228,7 @@ const decrementar = () => {
                 v-model="nt"
                 type="text"
                 placeholder="Ejemplo: 729023"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -239,7 +239,7 @@ const decrementar = () => {
                 v-model="etiqueta"
                 type="text"
                 placeholder="Ejemplo: 839.73-L37-M542"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -250,7 +250,7 @@ const decrementar = () => {
                 v-model="titulo"
                 type="text"
                 placeholder="Ejemplo: Las grandes aventuras"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -261,7 +261,7 @@ const decrementar = () => {
                 v-model="autor"
                 type="text"
                 placeholder="Ejemplo: Stefan Zweig"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -270,7 +270,7 @@ const decrementar = () => {
               <label class="block text-sm font-semibold text-gray-700 mb-2">Categoría</label>
               <select 
                 v-model="categoria"
-                class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               >
                 <option v-for="cat in categorias" :key="cat" :value="cat">
                   {{ cat }}
@@ -284,7 +284,7 @@ const decrementar = () => {
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
                 <select 
                   v-model="estado"
-                  class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                  class="w-full px-4 py-2 bg-gray-200 border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
                 >
                   <option value="enInventario">En inventario</option>
                   <option value="prestado">Prestado</option>

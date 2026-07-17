@@ -3,7 +3,7 @@ import Login from '../views/Login.vue';
 import Inventario from '../views/Inventario.vue';
 import Prestamos from '../views/Prestamos.vue';
 import EditarPerfil from '../views/EditarPerfil.vue';
-import RecuperarContraseña from '../views/RecuperarContraseña.vue';
+
 
 const routes = [
   {
@@ -33,11 +33,7 @@ const routes = [
     component: EditarPerfil,
     meta: { requiresAuth: true }
   },
-  {
-    path: '/recuperar-contraseña',
-    name: 'RecuperarContraseña',
-    component: RecuperarContraseña
-  }
+  
 ];
 
 const router = createRouter({

@@ -15,8 +15,9 @@ const acepta = ref(false);
 </script>
 
 <template>
-  <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+  <Transition name="modal">
+  <div v-if="isOpen" class="fixed inset-0 bg-black/10 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto">
       
       <!-- Header -->
       <div class="sticky top-0 bg-[#344F37] text-white p-6 flex justify-between items-center">
@@ -130,6 +131,7 @@ const acepta = ref(false);
 
     </div>
   </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -139,7 +141,7 @@ const acepta = ref(false);
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #ffffff;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -149,5 +151,39 @@ const acepta = ref(false);
 
 ::-webkit-scrollbar-thumb:hover {
   background: #2a3d2c;
+}
+
+/* Animación del fondo */
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-to,
+.modal-leave-from {
+  opacity: 1;
+}
+
+/* Animación del panel */
+.modal-enter-active .bg-white,
+.modal-leave-active .bg-white {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-enter-from .bg-white,
+.modal-leave-to .bg-white {
+  opacity: 0;
+  transform: scale(0.92) translateY(-20px);
+}
+
+.modal-enter-to .bg-white,
+.modal-leave-from .bg-white {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 </style>

@@ -219,7 +219,7 @@ const obtenerFechaMinima = () => {
                   v-model="nt"
                   type="text"
                   placeholder="Ejemplo: 729023"
-                  class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
+                  class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
                 />
                 <div v-if="cargandoLibro" class="absolute right-3 top-2.5">
                   <svg class="w-5 h-5 animate-spin text-[#8B3A5C]" fill="none" viewBox="0 0 24 24">
@@ -239,7 +239,7 @@ const obtenerFechaMinima = () => {
                 disabled
                 :class="[
                   'w-full px-4 py-2 rounded text-gray-800 cursor-not-allowed',
-                  libroEncontrado ? 'bg-white border border-gray-300' : 'bg-gray-100'
+                  libroEncontrado ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100'
                 ]"
               />
             </div>
@@ -253,7 +253,7 @@ const obtenerFechaMinima = () => {
                 disabled
                 :class="[
                   'w-full px-4 py-2 rounded text-gray-800 cursor-not-allowed',
-                  libroEncontrado ? 'bg-white border border-gray-300' : 'bg-gray-100'
+                  libroEncontrado ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100'
                 ]"
               />
             </div>
@@ -267,7 +267,7 @@ const obtenerFechaMinima = () => {
                 disabled
                 :class="[
                   'w-full px-4 py-2 rounded text-gray-800 cursor-not-allowed',
-                  libroEncontrado ? 'bg-white border border-gray-300' : 'bg-gray-100'
+                  libroEncontrado ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100'
                 ]"
               />
             </div>
@@ -281,7 +281,7 @@ const obtenerFechaMinima = () => {
                 disabled
                 :class="[
                   'w-full px-4 py-2 rounded text-gray-800 cursor-not-allowed',
-                  libroEncontrado ? 'bg-white border border-gray-300' : 'bg-gray-100'
+                  libroEncontrado ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100'
                 ]"
               />
             </div>
@@ -293,7 +293,7 @@ const obtenerFechaMinima = () => {
                 v-model="nombreLector"
                 type="text"
                 placeholder="Ejemplo: José Luis Hernández"
-                class="w-full px-4 py-2 bg-gray-100 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
               />
             </div>
 
@@ -305,7 +305,7 @@ const obtenerFechaMinima = () => {
                   v-model="fechaPrestamo"
                   type="date"
                   :max="obtenerFechaHoy()"
-                  class="w-full px-4 py-2 bg-gray-100 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
+                  class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
                 />
               </div>
               <div>
@@ -314,7 +314,7 @@ const obtenerFechaMinima = () => {
                   v-model="fechaDevolucion"
                   type="date"
                   :min="obtenerFechaMinima()"
-                  class="w-full px-4 py-2 bg-gray-100 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
+                  class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#8B3A5C]"
                 />
               </div>
             </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { EyeIcon, TrashIcon, ListBulletIcon, FolderPlusIcon, RectangleStackIcon, FolderOpenIcon } from '@heroicons/vue/24/solid';
 import { librosService } from '../services/librosService';
 import Sidebar from '../components/SideBar.vue';
@@ -36,6 +35,7 @@ const librosPerPage = 30;
 const totalLibros = ref(0);
 const cargando = ref(false);
 const libroSeleccionadoId = ref<number | null>(null);
+const refreshInterval = ref<ReturnType<typeof setInterval> | null>(null);
 
 const filtrosGuardados = localStorage.getItem('filtrosInventario');
 
@@ -49,6 +49,7 @@ const filtrosAplicados = ref<FiltrosAplicados>(
         categorias: [],
       }
 );
+
 const obtenerFecha = () => {
   const hoy = new Date();
   const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' };
@@ -84,37 +85,30 @@ const librosFiltradosPorBusqueda = computed(() => {
 const librosFiltrados = computed(() => {
   let resultado = librosFiltradosPorBusqueda.value;
 
-  // Filtrar por estado
   if (filtrosAplicados.value.estado.length > 0) {
     resultado = resultado.filter(libro =>
       filtrosAplicados.value.estado.includes(libro.estado)
     );
   }
 
-  // Filtrar por ejemplares (mayor o igual)
   if (filtrosAplicados.value.ejemplares > 0) {
     resultado = resultado.filter(libro =>
       libro.ejemplares >= filtrosAplicados.value.ejemplares
     );
   }
 
-  // Filtrar por categorías
   if (filtrosAplicados.value.categorias.length > 0) {
     resultado = resultado.filter(libro =>
       filtrosAplicados.value.categorias.includes(libro.categoria)
     );
   }
 
-  // Ordenar
   resultado.sort((a, b) => {
     const tituloA = a.titulo.toLowerCase();
     const tituloB = b.titulo.toLowerCase();
-    
-    if (filtrosAplicados.value.ordenar === 'A-Z') {
-      return tituloA.localeCompare(tituloB);
-    } else {
-      return tituloB.localeCompare(tituloA);
-    }
+    return filtrosAplicados.value.ordenar === 'A-Z' 
+      ? tituloA.localeCompare(tituloB) 
+      : tituloB.localeCompare(tituloA);
   });
 
   return resultado;
@@ -132,14 +126,10 @@ const totalPaginas = computed(() => {
 
 const getEstadoClases = (estado: string) => {
   switch (estado) {
-    case 'enInventario':
-      return 'text-[#344F37] bg-green-100';
-    case 'prestado':
-      return 'text-[#F27B35] bg-yellow-100';
-    case 'sinExistencias':
-      return 'text-[#D9298A] bg-rose-100';
-    default:
-      return 'text-gray-600 bg-gray-50';
+    case 'enInventario': return 'text-[#344F37] bg-green-100';
+    case 'prestado': return 'text-[#F27B35] bg-yellow-100';
+    case 'sinExistencias': return 'text-[#D9298A] bg-rose-100';
+    default: return 'text-gray-600 bg-gray-50';
   }
 };
 
@@ -152,12 +142,9 @@ const eliminarLibro = async (id: number) => {
     title: '¿Eliminar libro?',
     text: 'Esta acción no se puede deshacer.',
     icon: 'warning',
-
     showCancelButton: true,
-
     confirmButtonColor: '#344F37',
     cancelButtonColor: '#D9298A',
-
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar',
   });
@@ -165,7 +152,6 @@ const eliminarLibro = async (id: number) => {
   if (result.isConfirmed) {
     try {
       await librosService.eliminarLibro(id);
-
       await Swal.fire({
         title: 'Eliminado',
         text: 'El libro fue eliminado correctamente',
@@ -173,17 +159,10 @@ const eliminarLibro = async (id: number) => {
         timer: 1500,
         showConfirmButton: false,
       });
-
       cargarLibros();
-
     } catch (err) {
       console.error(err);
-
-      Swal.fire({
-        title: 'Error',
-        text: 'No se pudo eliminar el libro',
-        icon: 'error',
-      });
+      Swal.fire({ title: 'Error', text: 'No se pudo eliminar el libro', icon: 'error' });
     }
   }
 };
@@ -193,222 +172,222 @@ const irAgregarLibro = () => {
 };
 
 const libroAgregado = () => {
-  console.log('Libro agregado, recargando...');
   cargarLibros();  
   mostrarModal.value = false;
 };
 
 const aplicarFiltros = (filtros: FiltrosAplicados) => {
-
   filtrosAplicados.value = filtros;
-
-  // Guardar filtros
-  localStorage.setItem(
-    'filtrosInventario',
-    JSON.stringify(filtros)
-  );
-
+  localStorage.setItem('filtrosInventario', JSON.stringify(filtros));
   paginaActual.value = 1;
-
-  console.log('Filtros aplicados:', filtros);
 };
 
 const categoriaSeleccionada = ref('');
 const librosPorCategoria = computed(() => {
   const categorias: { [key: string]: number } = {};
-  
   libros.value.forEach(libro => {
     const cat = libro.categoria || 'Sin categoría';
     categorias[cat] = (categorias[cat] || 0) + 1;
   });
-  
   return categorias;
 });
 
 onMounted(() => {
   cargarLibros();
+  refreshInterval.value = setInterval(cargarLibros, 5000);
+});
+
+onUnmounted(() => {
+  if (refreshInterval.value) clearInterval(refreshInterval.value);
 });
 </script>
 
-
 <template>
+  <div class="flex min-h-screen animate-page">
+    <Sidebar />
 
-    <div class="flex min-h-screen">
-        <Sidebar />
-   
-
-  <main class="flex-1 overflow-auto">
-    <!-- Header -->
-     <div class="px-6 pt-6 pb-6">
-        <div class="bg-[#344F37] backdrop-blur-sm rounded-4xl px-6 py-3 mb-2">
+    <main class="flex-1 overflow-auto">
+      <!-- Header -->
+      <div class="px-6 pt-6 pb-6">
+        <div class="bg-[#344F37] backdrop-blur-sm rounded-3xl px-6 py-4 mb-2">
           <div class="flex justify-between items-start">
             <h1 class="text-4xl font-bold text-white">Panel principal de inventario de libros</h1>
-            <div class="bg-white rounded-lg px-6 py-2 text-right shadow-lg">
+            <div class="bg-white rounded-2xl px-6 py-3 text-right shadow-lg">
               <p class="text-sm text-[#344F37]">Fecha actual</p>
               <p class="font-semibold text-[#344F37]">{{ obtenerFecha() }}</p>
             </div>
           </div>
         </div>
       </div>
-    
+
       <!-- Estadísticas -->
-      <div class="px-6 mb-6 flex justify-between items-start">
-        <div class="bg-white rounded-lg px-6 py-2 w-fit shadow-lg flex items-center gap-3">
-          <RectangleStackIcon class="icono" />
-          <div class="text-left flex flex-col gap-1">
-            <p class="text-3xl font-bold text-[#344F37]">{{ totalLibros }}</p>
+      <div class="px-6 mb-6 flex justify-between items-start gap-6">
+        <!-- Card Total -->
+        <div class="bg-white rounded-3xl px-6 py-5 w-fit shadow-lg flex items-center gap-4 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl">
+          <RectangleStackIcon class="w-10 h-10 text-[#344F37] transition-transform duration-300 hover:scale-110" />
+          <div>
+            <p class="text-4xl font-bold text-[#344F37]">{{ totalLibros }}</p>
             <p class="text-[#344F37]">Total de libros registrados</p>
           </div>
         </div>
-       
-      <!-- Card Categorías -->
-    <div class="bg-white rounded-lg px-6 py-3 shadow-lg flex items-center gap-6">
-      
-      <FolderOpenIcon class="icono" />
-      <div class="flex flex-col gap-2">
-        <label class="text-sm text-[#344F37] font-semibold">Libros por categoría</label>
-        <select 
-          v-model="categoriaSeleccionada"
-          class="px-3 py-1 border border-[#344F37] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98BF45] text-sm font-semibold text-[#344F37]"
-        >
-          <option value="">-- Seleccionar una categoría --</option>
-          <option 
-            v-for="(cantidad, categoria) in librosPorCategoria" 
-            :key="categoria"
-            :value="categoria"
-          >
-            {{ categoria }} ({{ cantidad }})
-          </option>
-        </select>
-      </div>
-    
-      <!-- Número grande -->
-      <div class="text-center pl-4 border-l border-gray-300">
-        <p class="text-3xl font-bold text-[#344F37]">
-          {{ categoriaSeleccionada ? librosPorCategoria[categoriaSeleccionada] : libros.length }}
-        </p>
-        <p class="text-xs text-[#344F37]">libros registrados en esta categoria</p>
-      </div>
-    </div>
-            <div class="flex-rigth gap-4 mb-6">
-          <button 
-              @click="mostrarFiltros = true"
-              class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-lg"
+
+        <!-- Card Categorías -->
+        <div class="bg-white rounded-3xl px-6 py-5 shadow-lg flex items-center gap-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl flex-1 max-w-md">
+          <FolderOpenIcon class="w-10 h-10 text-[#344F37] transition-transform duration-300 hover:scale-110" />
+          <div class="flex-1">
+            <label class="text-sm text-[#344F37] font-semibold block mb-1">Libros por categoría</label>
+            <select 
+              v-model="categoriaSeleccionada"
+              class="w-full px-4 py-2 border border-[#344F37] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#98BF45] text-sm font-semibold transition-all duration-300 hover:scale-105"
             >
-              <ListBulletIcon class="icono2" />
-              Filtros
-            </button>
+              <option value="">-- Seleccionar una categoría --</option>
+              <option v-for="(cantidad, categoria) in librosPorCategoria" :key="categoria" :value="categoria">
+                {{ categoria }} ({{ cantidad }})
+              </option>
+            </select>
           </div>
+          <div class="text-center pl-6 border-l border-gray-200">
+            <p class="text-4xl font-bold text-[#344F37]">
+              {{ categoriaSeleccionada ? librosPorCategoria[categoriaSeleccionada] : libros.length }}
+            </p>
+            <p class="text-xs text-[#344F37]">en esta categoría</p>
           </div>
-          
-          <!-- Búsqueda y botón -->
-          <div class="flex gap-4 px-6 py-6">
-            <input
-              v-model="busqueda"
-              type="text"
-              placeholder="Búsqueda por NT, título, y autor"
-              class="flex-1 px-4 py-3 rounded-lg bg-white text-black placeholder-[#344F37] focus:outline-none focus:ring-2 focus:ring-[#344F37]"
-            />
+        </div>
+
+        <button 
+          @click="mostrarFiltros = true"
+          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-6 py-3 rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-2 self-start"
+        >
+          <ListBulletIcon class="w-5 h-5 transition-transform duration-200" />
+          Filtros
+        </button>
+      </div>
+
+      <!-- Búsqueda y Agregar -->
+      <div class="flex gap-4 px-6 pb-6">
+        <input
+          v-model="busqueda"
+          type="text"
+          placeholder="Búsqueda por NT, título, y autor"
+          class="flex-1 px-5 py-4 rounded-3xl bg-white focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 focus:scale-[1.02]"
+        />
 
         <button
           @click="irAgregarLibro"
-          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-6 py-3 rounded-lg transition flex items-center gap-2 shadow-lg"
+          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-8 py-4 rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-3 whitespace-nowrap"
         >
-          <FolderPlusIcon class="icono2" />
-          <span>Agregar libro</span>
+          <FolderPlusIcon class="w-5 h-5 transition-transform duration-200" />
+          Agregar libro
         </button>
       </div>
-   
 
-    <!-- Tabla -->
-    <div class="px-6 py-6">
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-[#344F37] text-white">
-              <th class="px-6 py-4 text-left font-semibold">No. de registro</th>
-              <th class="px-6 py-4 text-left font-semibold">NT</th>
-              <th class="px-6 py-4 text-left font-semibold">Título</th>
-              <th class="px-6 py-4 text-left font-semibold">Autor</th>
-              <th class="px-6 py-4 text-left font-semibold">Categoría</th>
-              <th class="px-6 py-4 text-left font-semibold">Estado</th>
-              <th class="px-6 py-4 text-center font-semibold">Mostrar más</th>
-              <th class="px-6 py-4 text-center font-semibold">Eliminar</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-[#344F37]/20">
-            <tr v-for="(libro, index) in librosPaginados" :key="libro.id" class="hover:bg-gray-50 transition">
-              <td class="px-6 py-4 text-black">{{ (paginaActual - 1) * librosPerPage + index + 1 }}</td>
-              <td class="px-6 py-4 text-black font-mono text-sm">{{ libro.nt }}</td>
-              <td class="px-6 py-4 text-black">{{ libro.titulo }}</td>
-              <td class="px-6 py-4 text-black">{{ libro.autor }}</td>
-              <td class="px-6 py-4 text-black">{{ libro.categoria }}</td>
-              <td class="px-6 py-4">
-                <span :class="['px-3 py-1 rounded-full text-sm font-semibold', getEstadoClases(libro.estado)]">
-                  {{ libro.estado_display }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button
-                  @click="verDetalles(libro.id)"
-                 
-                >
-                  <EyeIcon class="icono" />
-                </button>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button
-                  @click="eliminarLibro(libro.id)"
-                  
-                >
-                  <TrashIcon class="icono" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Tabla -->
+      <div class="px-6 pb-6">
+        <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-[#344F37] text-white">
+                <th class="px-6 py-5 text-left font-semibold">No. de registro</th>
+                <th class="px-6 py-5 text-left font-semibold">NT</th>
+                <th class="px-6 py-5 text-left font-semibold">Título</th>
+                <th class="px-6 py-5 text-left font-semibold">Autor</th>
+                <th class="px-6 py-5 text-left font-semibold">Categoría</th>
+                <th class="px-6 py-5 text-left font-semibold">Estado</th>
+                <th class="px-6 py-5 text-center font-semibold">Mostrar</th>
+                <th class="px-6 py-5 text-center font-semibold">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr 
+                v-for="(libro, index) in librosPaginados" 
+                :key="libro.id" 
+                class="hover:bg-gray-50 transition-all duration-200 hover:scale-[1.01]"
+              >
+                <td class="px-6 py-5">{{ (paginaActual - 1) * librosPerPage + index + 1 }}</td>
+                <td class="px-6 py-5 font-mono text-sm">{{ libro.nt }}</td>
+                <td class="px-6 py-5">{{ libro.titulo }}</td>
+                <td class="px-6 py-5">{{ libro.autor }}</td>
+                <td class="px-6 py-5">{{ libro.categoria }}</td>
+                <td class="px-6 py-5">
+                  <span :class="['px-4 py-1.5 rounded-2xl text-sm font-semibold', getEstadoClases(libro.estado)]">
+                    {{ libro.estado_display }}
+                  </span>
+                </td>
+                <td class="px-6 py-5 text-center">
+                  <button @click="verDetalles(libro.id)" class="hover:scale-125 transition-transform duration-200">
+                    <EyeIcon class="w-6 h-6 text-gray-600 hover:text-[#344F37]" />
+                  </button>
+                </td>
+                <td class="px-6 py-5 text-center">
+                  <button @click="eliminarLibro(libro.id)" class="hover:scale-125 transition-transform duration-200">
+                    <TrashIcon class="w-6 h-6 text-gray-600 hover:text-red-600" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-        <!-- Sin resultados -->
-        <div v-if="librosPaginados.length === 0" class="text-center py-12 text-[#344F37]">
-          No hay libros para mostrar
+          <div v-if="librosPaginados.length === 0" class="text-center py-16 text-[#344F37]">
+            No hay libros para mostrar
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="flex justify-center gap-3 mt-8">
+          <button
+            v-for="pagina in totalPaginas"
+            :key="pagina"
+            @click="paginaActual = pagina"
+            class="w-11 h-11 rounded-2xl font-semibold transition-all duration-200 hover:scale-110 active:scale-95"
+            :class="[
+              paginaActual === pagina
+                ? 'bg-[#344F37] text-white shadow-lg'
+                : 'bg-white text-gray-700 border border-gray-200 hover:border-[#98BF45] hover:bg-[#98BF45] hover:text-white'
+            ]"
+          >
+            {{ pagina }}
+          </button>
         </div>
       </div>
+    </main>
 
-      <!-- Paginación -->
-      <div class="flex justify-center gap-2 mt-6">
-        <button
-          v-for="pagina in totalPaginas"
-          :key="pagina"
-          @click="paginaActual = pagina"
-          :class="[
-            'w-10 h-10 rounded-lg font-semibold transition',
-            paginaActual === pagina
-              ? 'bg-[#344F37] text-white shadow-lg'
-              : 'bg-white text-gray-700 border border-gray-300 hover:border-[#98BF45]'
-          ]"
-        >
-          {{ pagina }}
-        </button>
-      </div>
-    </div>
-  </main>
- <!-- Modal de ver libro -->
-  <VerLibroModal 
-  v-if="libroSeleccionadoId"
-  :libro-id="libroSeleccionadoId"
-  @cerrar="libroSeleccionadoId = null"
-  @libro-actualizado="cargarLibros"
-/>
-  <!-- Modal agregar libro -->
-<AgregarLibroModal 
-  v-if="mostrarModal"
-  @cerrar="mostrarModal = false"
-  @libro-agregado="libroAgregado"
-/>
+    <!-- Modales -->
+    <VerLibroModal 
+      v-if="libroSeleccionadoId"
+      :libro-id="libroSeleccionadoId"
+      @cerrar="libroSeleccionadoId = null"
+      @libro-actualizado="cargarLibros"
+    />
 
-<FiltrosModal 
-  v-model="mostrarFiltros"
-  @aplicar="aplicarFiltros"
-/>
+    <AgregarLibroModal 
+      v-if="mostrarModal"
+      @cerrar="mostrarModal = false"
+      @libro-agregado="libroAgregado"
+    />
+
+    <FiltrosModal 
+      v-model="mostrarFiltros"
+      @aplicar="aplicarFiltros"
+    />
   </div>
 </template>
+
+<style scoped>
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(.985);
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-page{
+  animation: pageEnter .75s cubic-bezier(.22,1,.36,1);
+}
+</style>

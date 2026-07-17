@@ -243,7 +243,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
             </div>
@@ -257,7 +257,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
             </div>
@@ -271,7 +271,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
             </div>
@@ -285,7 +285,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-white border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               />
             </div>
@@ -298,7 +298,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-white border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                 ]"
               >
                 <option v-for="cat in categorias" :key="cat" :value="cat">
@@ -316,7 +316,7 @@ const decrementar = () => {
                   :disabled="!modoEdicion"
                   :class="[
                     'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                    modoEdicion ? 'bg-white border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                    modoEdicion ? 'bg-gray-200 border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
                   ]"
                 >
                   <option value="enInventario">En inventario</option>
