@@ -84,13 +84,13 @@ const obtenerUrlFoto = (foto?: string) => {
 <template>
   <div 
     :class="[
-      'bg-white shadow-lg flex flex-col rounded-2xl transition-all duration-300',
+      'bg-white shadow-lg flex flex-col rounded-4xl transition-all duration-300',
       abierto ? 'w-64' : 'w-20', 
       'min-h-screen'
     ]"
   >
     <!-- Toggle -->
-    <div class="flex justify-end p-4 bg-white rounded-tl-2xl rounded-tr-2xl">
+    <div class="flex justify-end p-4 bg-white rounded-tl-4xl rounded-tr-4xl">
       <button @click="toggleSidebar" class="text-gray-700">
         <ChevronDoubleLeftIcon v-if="abierto" class="icono" />
         <ChevronDoubleRightIcon v-else class="icono" />
@@ -163,7 +163,7 @@ const obtenerUrlFoto = (foto?: string) => {
         @click="irAInventario"
         :class="[
           claseBoton('/inventario'),
-          'w-full font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300'
+          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300'
         ]"
       >
         <BookOpenIcon class="w-6 h-6" />
@@ -174,7 +174,7 @@ const obtenerUrlFoto = (foto?: string) => {
         @click="irAPrestamos"
         :class="[
           claseBoton('/prestamos'),
-          'w-full font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300'
+          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300'
         ]"
       >
         <ClipboardDocumentListIcon class="w-6 h-6" />

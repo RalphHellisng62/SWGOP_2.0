@@ -36,10 +36,6 @@ const categorias = [
   'Préstamo a domicilio',
 ];
 
-const validarFormato = (url: string): boolean => {
-  const extension = url.toLowerCase().split('?')[0].split('.').pop();
-  return extension === 'png' || extension === 'jpg' || extension === 'jpeg';
-};
 
 const handleFotoArchivo = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -64,26 +60,6 @@ const handleFotoArchivo = (event: Event) => {
 };
 
 
-const cerrarDialogUrl = () => {
-  mostrarDialogUrl.value = false;
-};
-
-const handleFotoUrl = () => {
-  if (!fotoUrl.value) {
-    error.value = 'Ingresa una URL';
-    return;
-  }
-  
-  if (!validarFormato(fotoUrl.value)) {
-    error.value = 'Solo PNG y JPG permitidos';
-    return;
-  }
-  
-  error.value = '';
-  fotoFile.value = null;
-  fotoPreview.value = fotoUrl.value;
-  cerrarDialogUrl();
-};
 
 const agregarLibro = async () => {
   error.value = '';
@@ -184,6 +160,7 @@ const decrementar = () => {
 </script>
 
 <template>
+  <Transition name="modal-libro" appear>
   <!-- Backdrop -->
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
     <!-- Modal -->
@@ -223,23 +200,23 @@ const decrementar = () => {
           <div class="space-y-4">
             <!-- NT -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">NT</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Número de Topografía (NT)</label>
               <input 
                 v-model="nt"
                 type="text"
                 placeholder="Ejemplo: 729023"
-                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class=" w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35] "
               />
             </div>
 
             <!-- Etiqueta -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Datos de etiqueta</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Clave de ubicación en el estante (signatura topográfica)</label>
               <input 
                 v-model="etiqueta"
                 type="text"
                 placeholder="Ejemplo: 839.73-L37-M542"
-                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -250,7 +227,7 @@ const decrementar = () => {
                 v-model="titulo"
                 type="text"
                 placeholder="Ejemplo: Las grandes aventuras"
-                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -261,7 +238,7 @@ const decrementar = () => {
                 v-model="autor"
                 type="text"
                 placeholder="Ejemplo: Stefan Zweig"
-                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class="w-full px-4 py-2 bg-gray-200 text-gray-800 placeholder-gray-500 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
               />
             </div>
 
@@ -270,7 +247,7 @@ const decrementar = () => {
               <label class="block text-sm font-semibold text-gray-700 mb-2">Categoría</label>
               <select 
                 v-model="categoria"
-                class="w-full px-4 py-2 bg-gray-200 border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                class=" w-full px-4 py-2 bg-gray-200 border border-gray-300 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35] "
               >
                 <option v-for="cat in categorias" :key="cat" :value="cat">
                   {{ cat }}
@@ -281,10 +258,10 @@ const decrementar = () => {
             <!-- Estado y Cantidad -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Estado actual del libro</label>
                 <select 
                   v-model="estado"
-                  class="w-full px-4 py-2 bg-gray-200 border border-gray-300 text-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
+                  class="w-full px-4 py-2 bg-gray-200 border border-gray-300 text-gray-800 rounded transition-all duration-300 ease-out hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
                 >
                   <option value="enInventario">En inventario</option>
                   <option value="prestado">Prestado</option>
@@ -298,7 +275,7 @@ const decrementar = () => {
                   <button 
                     type="button"
                     @click="decrementar"
-                    class="bg-[#F27B35] hover:bg-[#F2B035] text-white w-8 h-8 rounded flex items-center justify-center font-bold"
+                    class=" bg-[#F27B35] hover:bg-[#F2B035] text-white w-8 h-8 rounded flex items-center justify-center transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90 "
                   >
                     −
                   </button>
@@ -306,7 +283,7 @@ const decrementar = () => {
                   <button 
                     type="button"
                     @click="incrementar"
-                    class="bg-[#F27B35] hover:bg-[#F2B035] text-white w-8 h-8 rounded flex items-center justify-center font-bold"
+                    class="bg-[#F27B35] hover:bg-[#F2B035] text-white w-8 h-8 rounded flex items-center justify-center font-bold transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90"
                   >
                     +
                   </button>
@@ -318,10 +295,11 @@ const decrementar = () => {
           <!-- Columna derecha - Foto -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Foto del libro</label>
-            <div class="border-2 border-dashed border-[#D9298A] rounded-lg p-0 h-130 flex flex-col items-center justify-center bg-white">
+            <div class="border-2 border-dashed border-[#D9298A] rounded-4xl p-0 h-130 flex flex-col items-center justify-center bg-white transition-all duration-300 hover:scale-105  hover:border-[#344F37]
+">
               
               <!-- Preview de foto -->
-              <img v-if="fotoPreview" :src="fotoPreview" alt="Preview" class="w-full h-full max-h-115 object-contain mb-4" />
+              <img v-if="fotoPreview" :src="fotoPreview" alt="Preview" class="w-full h-full max-h-115 object-contain mb-4 transition-all duration-500 hover:scale-105" />
               
               <!-- Sin foto -->
               <div v-else class="text-center">
@@ -335,7 +313,7 @@ const decrementar = () => {
               <!-- Botones de carga -->
               <div class="flex gap-3 justify-center w-full flex-wrap">
                 <!-- Cargar desde archivo -->
-                <label class="flex items-center gap-2 font-semibold transition cursor-pointer">
+                <label class="flex items-center gap-2 font-semibold cursor-pointer transition-all duration-300 ease-out hover:scale-105 hover:text-[#344F37] ">
                   <FolderArrowDownIcon class="icono" />
                   Explorador
                   <input 
@@ -351,34 +329,6 @@ const decrementar = () => {
           </div>
 
         </form>
-
-        <div v-if="mostrarDialogUrl" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
-            <h3 class="text-xl font-semibold mb-4">Ingresar URL de la imagen</h3>
-            <input
-              v-model="fotoUrl"
-              type="text"
-              placeholder="https://example.com/imagen.jpg"
-              class="w-full px-4 py-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#F27B35]"
-            />
-            <div class="flex justify-end gap-3">
-              <button
-                type="button"
-                @click="cerrarDialogUrl"
-                class="px-5 py-2 border border-gray-300 rounded hover:bg-gray-100 transition"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                @click="handleFotoUrl"
-                class="px-5 py-2 bg-[#344F37] text-white rounded hover:bg-[#98BF45] transition"
-              >
-                Aceptar
-              </button>
-            </div>
-          </div>
-        </div>
 
           <!-- Línea decorativa -->
   <div class="relative mb-6 mt-10">
@@ -402,7 +352,7 @@ const decrementar = () => {
         <div class="flex justify-between items-center">
           <button 
             @click="cerrar"
-            class="flex items-center gap-2 text-[#344F37] font-semibold hover:text-[#98BF45] transition underline"
+            class="flex items-center gap-2 text-[#344F37] font-semibold hover:text-[#98BF45] transition-all duration-300 ease-out hover:scale-105 active:scale-90 underline"
           >
           <arrow-left-circle-icon class="icono" />
           Regresar
@@ -411,7 +361,7 @@ const decrementar = () => {
             <button 
               @click="cerrar"
               type="button"
-              class="px-6 py-2 bg-[#D9298A] font-semibold rounded hover:bg-[#690035] transition text-white"
+              class="px-6 py-2 bg-[#D9298A] font-semibold rounded-4xl hover:bg-[#690035] transition-all duration-300 ease-out hover:scale-105 active:scale-90 text-white"
             >
               Cancelar
             </button>
@@ -419,7 +369,7 @@ const decrementar = () => {
               @click="agregarLibro"
               :disabled="cargando"
               type="button"
-              class="px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded transition disabled:opacity-50"
+              class="px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded-4xl transition-all duration-300 ease-out hover:scale-105 active:scale-90 disabled:opacity-50"
             >
               {{ cargando ? 'Agregando...' : 'Agregar' }}
             </button>
@@ -428,16 +378,61 @@ const decrementar = () => {
       </div>
     </div>
   </div>
+  </Transition>
 </template>
-
 <style scoped>
+
+/* Modal principal*/
+
+.modal-libro-enter-active,
+.modal-libro-leave-active{
+    transition: opacity .35s ease;
+}
+
+.modal-libro-enter-from,
+.modal-libro-leave-to{
+    opacity:0;
+}
+
+.modal-libro-enter-active .bg-white,
+.modal-libro-leave-active .bg-white{
+
+    transition:
+        transform .40s cubic-bezier(.22,1,.36,1),
+        opacity .35s ease;
+
+}
+
+.modal-libro-enter-from .bg-white{
+
+    transform:
+        translateY(40px)
+        scale(.95);
+
+    opacity:0;
+
+}
+
+.modal-libro-leave-to .bg-white{
+
+    transform:
+        translateY(30px)
+        scale(.95);
+
+    opacity:0;
+
+}
+
+/*Toats*/
+
 .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.9s;
+.fade-leave-active{
+    transition:opacity .5s ease;
 }
 
 .fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.fade-leave-to{
+    opacity:0;
 }
+
 </style>

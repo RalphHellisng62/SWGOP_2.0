@@ -106,18 +106,19 @@ const decrementar = () => {
 </script>
 
 <template>
+  <Transition name="filtros-modal" appear>
   <!-- Backdrop -->
   <div v-if="modelValue" class="fixed inset-0 bg-black/50 z-50 flex items-start justify-end">
     <!-- Panel lateral -->
-    <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-lg rounded-2xl">
+    <div class="bg-white w-full max-w-sm h-full overflow-y-auto shadow-lg rounded-4xl">
       
       <!-- Header -->
       <div class="bg-[#344F37] px-6 py-4 flex justify-between items-center sticky top-0 z-20">
         <h2 class="text-lg font-bold text-white">Búsqueda por filtros</h2>
-        <button 
-          @click="cerrar"
-          class="text-white hover:text-gray-200 transition"
-        >
+        <button
+        @click="cerrar"
+        class="text-white hover:text-gray-200 transition-all duration-300 hover:scale-125 active:scale-90"
+      >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -131,29 +132,29 @@ const decrementar = () => {
         <div>
           <h3 class="font-semibold text-black mb-3">Ordenar por...</h3>
           <div class="space-y-2">
-            <label class="flex items-center cursor-pointer">
-              <input 
-                v-model="ordenar"
-                type="radio"
-                value="A-Z"
-                class="w-4 h-4 accent-[#011956] cursor-pointer"
-              />
+            <label class="flex items-center cursor-pointer transition-all duration-300 hover:translate-x-1">
+              <input
+              v-model="ordenar"
+              type="radio"
+              value="A-Z"
+              class="w-4 h-4 accent-[#011956] cursor-pointer transition-all duration-300 hover:scale-125"
+            />
               <span class="ml-3 text-gray-700">A-Z</span>
             </label>
-            <label class="flex items-center cursor-pointer">
+            <label class="flex items-center cursor-pointer transition-all duration-300 hover:translate-x-1">
               <input 
                 v-model="ordenar"
                 type="radio"
                 value="Z-A"
-                class="w-4 h-4 accent-[#011956] cursor-pointer"
+                class="w-4 h-4 accent-[#011956] cursor-pointer transition-all duration-300 hover:scale-125"
               />
               <span class="ml-3 text-gray-700">Z-A</span>
             </label>
           </div>
            <div class="relative mt-3">
-        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        <div class="min-h-0.5 bg-[#344F37] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
         </div>
       </div>
         </div>
@@ -162,20 +163,20 @@ const decrementar = () => {
         <div>
           <h3 class="font-semibold text-gray-800 mb-3">Estado</h3>
           <div class="space-y-2">
-            <label v-for="estado in estados" :key="estado" class="flex items-center cursor-pointer">
-              <input 
-                :checked="estadoSeleccionados.includes(estado)"
-                @change="toggleEstado(estado)"
-                type="checkbox"
-                class="w-4 h-4 accent-[#011956] rounded cursor-pointer"
-              />
+            <label v-for="estado in estados" :key="estado" class="flex items-center cursor-pointer transition-all duration-300 hover:translate-x-1">
+              <input
+            :checked="estadoSeleccionados.includes(estado)"
+            @change="toggleEstado(estado)"
+            type="checkbox"
+            class="w-4 h-4 accent-[#011956] rounded cursor-pointer transition-all duration-300 hover:scale-125"
+          />
               <span class="ml-3 text-gray-700">{{ estadoLabels[estado] }}</span>
             </label>
           </div>
            <div class="relative mt-3">
-        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        <div class="min-h-0.5 bg-[#344F37] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
         </div>
       </div>
         </div>
@@ -186,23 +187,23 @@ const decrementar = () => {
           <div class="flex items-center justify-center gap-8">
             <button 
               @click="decrementar"
-              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition"
+              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90"
             >
             <MinusIcon class="w-5 h-5 text-white" />
             </button>
             <span class="text-center w-12 text-gray-800 font-semibold text-lg">{{ ejemplares }}</span>
             <button 
               @click="incrementar"
-              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition"
+              class="bg-[#011956] hover:bg-[#4EBFD9] text-white w-10 h-10 rounded flex items-center justify-center font-bold transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90"
             >
             <PlusIcon class="w-5 h-5 text-white" />
 
             </button>
           </div>
            <div class="relative mt-3">
-        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        <div class="min-h-0.5 bg-[#344F37] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
         </div>
       </div>
         </div>
@@ -211,20 +212,20 @@ const decrementar = () => {
         <div>
           <h3 class="font-semibold text-gray-800 mb-3">Categoría</h3>
           <div class="space-y-2">
-            <label v-for="cat in categorias" :key="cat" class="flex items-center cursor-pointer">
+            <label v-for="cat in categorias" :key="cat" class="flex items-center cursor-pointer transition-all duration-300 hover:translate-x-1">
               <input 
                 :checked="categoriasSeleccionadas.includes(cat)"
                 @change="toggleCategoria(cat)"
                 type="checkbox"
-                class="w-4 h-4 border-2 border-[#011956] accent-[#011956] rounded cursor-pointer"
+              class="w-4 h-4 border-2 border-[#011956] accent-[#011956] rounded cursor-pointer transition-all duration-300 hover:scale-125"
               />
               <span class="ml-3 text-gray-700 text-sm">{{ cat }}</span>
             </label>
           </div>
           <div class="relative mt-3">
-        <div class="min-h-0.5 bg-[#F27B35] rounded-full">
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#F27B35]"></div>
+        <div class="min-h-0.5 bg-[#344F37] rounded-full">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#344F37]"></div>
         </div>
       </div>
         </div>
@@ -232,12 +233,43 @@ const decrementar = () => {
         <!-- Botón Aplicar -->
         <button 
           @click="aplicarFiltros"
-          class="w-full bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold py-3 rounded transition"
-        >
+          class="w-full bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold py-3 rounded-4xl transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl active:scale-95"        >
           Aplicar
         </button>
 
       </div>
     </div>
   </div>
+  </Transition>
 </template>
+
+<style scoped>
+
+.filtros-modal-enter-active,
+.filtros-modal-leave-active{
+    transition: all .35s ease;
+}
+
+.filtros-modal-enter-from,
+.filtros-modal-leave-to{
+    opacity:0;
+}
+
+.filtros-modal-enter-active .bg-white,
+.filtros-modal-leave-active .bg-white{
+    transition:
+        transform .38s cubic-bezier(.22,1,.36,1),
+        opacity .35s ease;
+}
+
+.filtros-modal-enter-from .bg-white{
+    transform:translateX(100%);
+    opacity:.95;
+}
+
+.filtros-modal-leave-to .bg-white{
+    transform:translateX(100%);
+    opacity:.95;
+}
+
+</style>

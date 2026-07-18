@@ -209,10 +209,10 @@ onUnmounted(() => {
     <main class="flex-1 overflow-auto">
       <!-- Header -->
       <div class="px-6 pt-6 pb-6">
-        <div class="bg-[#344F37] backdrop-blur-sm rounded-3xl px-6 py-4 mb-2">
+        <div class="bg-[#344F37] backdrop-blur-sm rounded-4xl px-6 py-4 mb-2 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90">
           <div class="flex justify-between items-start">
             <h1 class="text-4xl font-bold text-white">Panel principal de inventario de libros</h1>
-            <div class="bg-white rounded-2xl px-6 py-3 text-right shadow-lg">
+            <div class="bg-white rounded-4xl px-6 py-3 text-right shadow-lg">
               <p class="text-sm text-[#344F37]">Fecha actual</p>
               <p class="font-semibold text-[#344F37]">{{ obtenerFecha() }}</p>
             </div>
@@ -223,7 +223,7 @@ onUnmounted(() => {
       <!-- Estadísticas -->
       <div class="px-6 mb-6 flex justify-between items-start gap-6">
         <!-- Card Total -->
-        <div class="bg-white rounded-3xl px-6 py-5 w-fit shadow-lg flex items-center gap-4 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-white rounded-4xl px-6 py-5 w-fit shadow-lg flex items-center gap-4 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl">
           <RectangleStackIcon class="w-10 h-10 text-[#344F37] transition-transform duration-300 hover:scale-110" />
           <div>
             <p class="text-4xl font-bold text-[#344F37]">{{ totalLibros }}</p>
@@ -232,13 +232,13 @@ onUnmounted(() => {
         </div>
 
         <!-- Card Categorías -->
-        <div class="bg-white rounded-3xl px-6 py-5 shadow-lg flex items-center gap-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl flex-1 max-w-md">
+        <div class="bg-white rounded-4xl px-6 py-5 shadow-lg flex items-center gap-6 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl flex-1 max-w-md">
           <FolderOpenIcon class="w-10 h-10 text-[#344F37] transition-transform duration-300 hover:scale-110" />
           <div class="flex-1">
             <label class="text-sm text-[#344F37] font-semibold block mb-1">Libros por categoría</label>
             <select 
               v-model="categoriaSeleccionada"
-              class="w-full px-4 py-2 border border-[#344F37] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#98BF45] text-sm font-semibold transition-all duration-300 hover:scale-105"
+              class="w-full px-4 py-2 border border-[#344F37] rounded-4xl focus:outline-none focus:ring-2 focus:ring-[#98BF45] text-sm font-semibold transition-all duration-300 hover:scale-105"
             >
               <option value="">-- Seleccionar una categoría --</option>
               <option v-for="(cantidad, categoria) in librosPorCategoria" :key="categoria" :value="categoria">
@@ -256,7 +256,7 @@ onUnmounted(() => {
 
         <button 
           @click="mostrarFiltros = true"
-          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-6 py-3 rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-2 self-start"
+          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-6 py-3 rounded-4xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-2 self-start"
         >
           <ListBulletIcon class="w-5 h-5 transition-transform duration-200" />
           Filtros
@@ -268,13 +268,13 @@ onUnmounted(() => {
         <input
           v-model="busqueda"
           type="text"
-          placeholder="Búsqueda por NT, título, y autor"
-          class="flex-1 px-5 py-4 rounded-3xl bg-white focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 focus:scale-[1.02]"
+          placeholder="Búsqueda por Número de Topografía (NT), título, y autor"
+          class="flex-1 px-5 py-4 rounded-4xl bg-white focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 focus:scale-[1.03] placeholder:text-gray-400"
         />
 
         <button
           @click="irAgregarLibro"
-          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-8 py-4 rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-3 whitespace-nowrap"
+          class="bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold px-8 py-4 rounded-4xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg flex items-center gap-3 whitespace-nowrap"
         >
           <FolderPlusIcon class="w-5 h-5 transition-transform duration-200" />
           Agregar libro
@@ -283,12 +283,12 @@ onUnmounted(() => {
 
       <!-- Tabla -->
       <div class="px-6 pb-6">
-        <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+        <div class="bg-white rounded-4xl shadow-lg overflow-hidden">
           <table class="w-full">
             <thead>
-              <tr class="bg-[#344F37] text-white">
+              <tr class="bg-[#344F37] text-white transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90">
                 <th class="px-6 py-5 text-left font-semibold">No. de registro</th>
-                <th class="px-6 py-5 text-left font-semibold">NT</th>
+                <th class="px-6 py-5 text-left font-semibold">Número de Topografía (NT)</th>
                 <th class="px-6 py-5 text-left font-semibold">Título</th>
                 <th class="px-6 py-5 text-left font-semibold">Autor</th>
                 <th class="px-6 py-5 text-left font-semibold">Categoría</th>
@@ -297,11 +297,11 @@ onUnmounted(() => {
                 <th class="px-6 py-5 text-center font-semibold">Eliminar</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-200">
               <tr 
                 v-for="(libro, index) in librosPaginados" 
                 :key="libro.id" 
-                class="hover:bg-gray-50 transition-all duration-200 hover:scale-[1.01]"
+                class="hover:bg-gray-300 transition-all duration-200 hover:scale-[1.01]"
               >
                 <td class="px-6 py-5">{{ (paginaActual - 1) * librosPerPage + index + 1 }}</td>
                 <td class="px-6 py-5 font-mono text-sm">{{ libro.nt }}</td>
@@ -309,18 +309,18 @@ onUnmounted(() => {
                 <td class="px-6 py-5">{{ libro.autor }}</td>
                 <td class="px-6 py-5">{{ libro.categoria }}</td>
                 <td class="px-6 py-5">
-                  <span :class="['px-4 py-1.5 rounded-2xl text-sm font-semibold', getEstadoClases(libro.estado)]">
+                  <span :class="['px-4 py-1.5 rounded-4xl text-sm font-semibold', getEstadoClases(libro.estado)]">
                     {{ libro.estado_display }}
                   </span>
                 </td>
                 <td class="px-6 py-5 text-center">
                   <button @click="verDetalles(libro.id)" class="hover:scale-125 transition-transform duration-200">
-                    <EyeIcon class="w-6 h-6 text-gray-600 hover:text-[#344F37]" />
+                    <EyeIcon class="w-6 h-6 icono" />
                   </button>
                 </td>
                 <td class="px-6 py-5 text-center">
                   <button @click="eliminarLibro(libro.id)" class="hover:scale-125 transition-transform duration-200">
-                    <TrashIcon class="w-6 h-6 text-gray-600 hover:text-red-600" />
+                    <TrashIcon class="w-6 h-6 icono" />
                   </button>
                 </td>
               </tr>
@@ -338,7 +338,7 @@ onUnmounted(() => {
             v-for="pagina in totalPaginas"
             :key="pagina"
             @click="paginaActual = pagina"
-            class="w-11 h-11 rounded-2xl font-semibold transition-all duration-200 hover:scale-110 active:scale-95"
+            class="w-11 h-11 rounded-4xl font-semibold transition-all duration-200 hover:scale-110 active:scale-95"
             :class="[
               paginaActual === pagina
                 ? 'bg-[#344F37] text-white shadow-lg'

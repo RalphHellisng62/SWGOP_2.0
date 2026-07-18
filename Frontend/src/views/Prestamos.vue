@@ -200,10 +200,10 @@ onUnmounted(() => {
       <main>
       <!-- Header -->
       <div class="px-6 pt-6 pb-6" >
-        <div class="bg-[#344F37] backdrop-blur-sm rounded-3xl px-6 py-4 mb-2">
+        <div class="bg-[#344F37] backdrop-blur-sm rounded-4xl px-6 py-4 mb-2 transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg active:scale-90">
           <div class="flex justify-between items-start">
             <h1 class="text-4xl font-bold text-white">Panel principal de libros prestados</h1>
-            <div class="bg-white rounded-2xl px-6 py-3 text-right shadow-lg">
+            <div class="bg-white rounded-4xl px-6 py-3 text-right shadow-lg">
               <p class="text-sm text-[#344F37]">Fecha actual</p>
               <p class="font-semibold text-[#344F37]">{{ obtenerFecha() }}</p>
             </div>
@@ -214,7 +214,7 @@ onUnmounted(() => {
       <!-- Estadísticas y Filtros -->
       <div class="px-6 mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-6">
         <!-- Total Prestados -->
-        <div class="bg-white rounded-3xl px-6 py-5 w-fit shadow-lg flex items-center gap-4 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl">
+        <div class="bg-white rounded-4xl px-6 py-5 w-fit shadow-lg flex items-center gap-4 transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-xl">
           <IdentificationIcon class="w-10 h-10 text-[#344F37] transition-transform duration-200 hover:scale-110" />
           <div>
             <p class="text-4xl font-bold text-[#344F37]">{{ prestamos.length }}</p>
@@ -227,7 +227,7 @@ onUnmounted(() => {
             <button
               @click="filtroActual = 'vigentes'; paginaActual = 1"
               :class="[
-                'px-6 py-3 rounded-3xl font-semibold transition-all duration-300 hover:scale-105',
+                'px-6 py-3 rounded-4xl font-semibold transition-all duration-300 hover:scale-105',
                 filtroActual === 'vigentes'
                   ? 'bg-[#F27B35] text-white shadow-lg'
                   : 'bg-white text-[#F27B35] border border-[#F27B35] hover:bg-[#F27B35] hover:text-white'
@@ -238,7 +238,7 @@ onUnmounted(() => {
             <button
               @click="filtroActual = 'vencidos'; paginaActual = 1"
               :class="[
-                'px-6 py-3 rounded-3xl font-semibold transition-all duration-300 hover:scale-105',
+                'px-6 py-3 rounded-4xl font-semibold transition-all duration-300 hover:scale-105',
                 filtroActual === 'vencidos'
                   ? 'bg-[#D9298A] text-white shadow-lg'
                   : 'bg-white text-[#D9298A] border border-[#D9298A] hover:bg-[#D9298A] hover:text-white'
@@ -286,7 +286,7 @@ onUnmounted(() => {
           <div
             v-for="prestamo in prestamosPaginados"
             :key="prestamo.id"
-            class="bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl group w-full"
+            class="bg-white rounded-4xl shadow-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl group w-full"
           >
             <!-- Imagen -->
             <div class="relative h-52 bg-gray-100 overflow-hidden">
@@ -357,7 +357,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Sin resultados -->
-        <div v-else class="bg-white rounded-3xl py-16 text-center max-w-md mx-auto transition-all hover:shadow-xl">
+        <div v-else class="bg-white rounded-4xl py-16 text-center max-w-md mx-auto transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg active:scale-90">
           <ExclamationCircleIcon class="w-16 h-16 mx-auto mb-6 text-gray-300" />
           <p class="text-xl text-gray-600">No hay préstamos en esta categoría</p>
         </div>

@@ -180,22 +180,23 @@ const decrementar = () => {
 </script>
 
 <template>
+ <Transition name="modal-libro" appear>
   <!-- Backdrop -->
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
     <!-- Modal -->
-    <div v-if="!cargando && libro" class="bg-white rounded-3xl w-full max-w-4xl max-h-[95vh] overflow-y-auto shadow-2xl">
+    <div v-if="!cargando && libro" class="bg-white rounded-4xl w-full max-w-4xl max-h-[95vh] overflow-y-auto shadow-2xl">
       
       <!-- Header -->
-      <div class="bg-[#344F37] backdrop-blur-sm px-8 py-6 sticky top-0 border-b border-[#344F37] flex justify-between items-center">
+      <div class="bg-[#344F37] backdrop-blur-sm px-8 py-6 sticky top-0 border-b border-[#344F37] flex justify-between items-center ">
         <h2 class="text-3xl font-bold text-white">Información completa del libro</h2>
         
         <!-- Toggle Modo Edición -->
-        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-2">
+        <div class="flex items-center gap-3 bg-white rounded-4xl px-4 py-2 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90">
           <span class="text-sm text-[#344F37]">Modo edición</span>
           <button
             @click="modoEdicion = !modoEdicion"
             :class="[
-              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
+              'relative inline-flex h-6 w-11 items-center rounded-4xl transition-colors',
               modoEdicion ? 'bg-[#011956]' : 'bg-[#4EBFD9]'
             ]"
           >
@@ -236,28 +237,28 @@ const decrementar = () => {
           <div class="space-y-4">
             <!-- NT -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">NT</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Número de Topografía (NT)</label>
               <input 
                 v-model="nt"
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                 ]"
               />
             </div>
 
             <!-- Etiqueta -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Datos de etiqueta</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Clave de ubicación en el estante (signatura topográfica)</label>
               <input 
                 v-model="etiqueta"
                 type="text"
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200  transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                 ]"
               />
             </div>
@@ -271,7 +272,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200  transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                 ]"
               />
             </div>
@@ -285,7 +286,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-gray-200 border border-gray-300' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                 ]"
               />
             </div>
@@ -298,7 +299,7 @@ const decrementar = () => {
                 :disabled="!modoEdicion"
                 :class="[
                   'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                  modoEdicion ? 'bg-gray-200 border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                  modoEdicion ? 'bg-gray-200 cursor-pointer transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                 ]"
               >
                 <option v-for="cat in categorias" :key="cat" :value="cat">
@@ -307,16 +308,16 @@ const decrementar = () => {
               </select>
             </div>
 
-            <!-- Estado y Cantidad -->
+            <!-- Estado y Ejemplares -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Estado</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Estado actual del libro</label>
                 <select 
                   v-model="estado"
                   :disabled="!modoEdicion"
                   :class="[
                     'w-full px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#011956]',
-                    modoEdicion ? 'bg-gray-200 border border-gray-300 cursor-pointer' : 'bg-gray-100 text-gray-600 cursor-not-allowed'
+                    modoEdicion ? 'bg-gray-200 cursor-pointer transition-all duration-300 ease-out hover:shadow-md' : 'bg-gray-200 text-gray-800 cursor-not-allowed transition-all duration-300 ease-out hover:shadow-md'
                   ]"
                 >
                   <option value="enInventario">En inventario</option>
@@ -326,12 +327,12 @@ const decrementar = () => {
               </div>
 
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Cantidad en el inventario</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2 ">Ejemplares</label>
                 <div v-if="modoEdicion" class="flex items-center gap-2">
                   <button 
                     type="button"
                     @click="decrementar"
-                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold"
+                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90"
                   >
                     −
                   </button>
@@ -339,12 +340,12 @@ const decrementar = () => {
                   <button 
                     type="button"
                     @click="incrementar"
-                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold"
+                    class="bg-[#011956] hover:bg-[#4EBFD9] text-white text-4xl w-8 h-8 rounded flex items-center justify-center font-bold transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg active:scale-90"
                   >
                     +
                   </button>
                 </div>
-                <div v-else class="px-4 py-2 bg-gray-100 text-gray-600 rounded">
+                <div v-else class="px-4 py-2 bg-gray-200 text-gray-800 rounded transition-all duration-300 ease-out hover:shadow-md">
                   {{ ejemplares }}
                 </div>
               </div>
@@ -356,8 +357,8 @@ const decrementar = () => {
             <label class="block text-sm font-semibold text-gray-700 mb-2">Foto del libro</label>
             <div 
               :class="[
-                'border-2 border-dashed border-[#D9298A] rounded-lg p-0 h-130 flex flex-col items-center justify-center bg-white',
-                modoEdicion ? 'border-[#D9298A] bg-white' : 'border-gray-300 bg-gray-50'
+                'border-2 border-dashed border-[#D9298A] rounded-4xl p-0 h-130 flex flex-col items-center justify-center bg-white transition-all duration-300 hover:scale-105  hover:border-[#344F37]',
+                modoEdicion ? 'border-[#D9298A] bg-white' : 'border-[#D9298A] bg-gray-100'
               ]"
             >
               <!-- Foto -->
@@ -375,7 +376,7 @@ const decrementar = () => {
 
               <!-- Botones de carga (solo en modo edición) -->
               <div v-if="modoEdicion" class="flex gap-3 justify-center w-full flex-wrap mt-4">
-                <label class="flex items-center gap-2 font-semibold transition cursor-pointer">
+                <label class="flex items-center gap-2 font-semibold transition cursor-pointer hover:text-[#344F37] hover:scale-105 active:scale-95">
                   <FolderArrowDownIcon class="icono" />
                   Explorador
                   <input 
@@ -414,7 +415,7 @@ const decrementar = () => {
         <div class="flex justify-between items-center">
           <button 
             @click="cerrar"
-            class="flex items-center gap-2 text-[#344F37] hover:text-[#98BF45] transition underline"
+            class="flex items-center gap-2 text-[#344F37] hover:text-[#98BF45] transition-all duration-300 ease-out hover:scale-105 active:scale-95 underline"
           >
           <ArrowLeftCircleIcon class="icono" />
           Regresar
@@ -424,7 +425,7 @@ const decrementar = () => {
             <button 
               @click="cancelarEdicion"
               type="button"
-              class="px-6 py-2 bg-[#D9298A] font-semibold rounded text-white hover:bg-[#690035] transition"
+              class="px-6 py-2 bg-[#D9298A] font-semibold rounded-4xl text-white hover:bg-[#690035] transition-all duration-300 ease-out hover:scale-105 active:scale-95"
             >
               Cancelar
             </button>
@@ -432,7 +433,7 @@ const decrementar = () => {
               @click="guardarCambios"
               :disabled="guardando"
               type="button"
-              class="px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded transition disabled:opacity-50"
+              class="px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded-4xl transition-all duration-300 ease-out hover:scale-105 active:scale-95 disabled:opacity-50"
             >
               {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
             </button>
@@ -447,16 +448,61 @@ const decrementar = () => {
       <p class="text-gray-600">Cargando información del libro...</p>
     </div>
   </div>
+  </Transition>
 </template>
 
 <style scoped>
+
+/* Modal principal*/
+
+.modal-libro-enter-active,
+.modal-libro-leave-active{
+    transition: opacity .35s ease;
+}
+
+.modal-libro-enter-from,
+.modal-libro-leave-to{
+    opacity:0;
+}
+
+.modal-libro-enter-active .bg-white,
+.modal-libro-leave-active .bg-white{
+
+    transition:
+        transform .40s cubic-bezier(.22,1,.36,1),
+        opacity .35s ease;
+
+}
+
+.modal-libro-enter-from .bg-white{
+
+    transform:
+        translateY(40px)
+        scale(.95);
+
+    opacity:0;
+
+}
+
+.modal-libro-leave-to .bg-white{
+
+    transform:
+        translateY(30px)
+        scale(.95);
+
+    opacity:0;
+
+}
+
+/*Toats*/
+
 .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
+.fade-leave-active{
+    transition:opacity .5s ease;
 }
 
 .fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.fade-leave-to{
+    opacity:0;
 }
 </style>

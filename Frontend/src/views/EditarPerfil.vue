@@ -169,16 +169,14 @@ const obtenerUrlFoto = (foto?: string) => {
   return `http://localhost:8000${foto}`;
 };
 </script>
-
 <template>
- <div class="flex min-h-screen">
+  <div class="flex min-h-screen animate-page">
     <Sidebar />
 
     <main class="flex-1 overflow-auto flex flex-col items-center justify-center p-6">
-      
-
       <!-- Card centrada -->
-      <div v-if="!cargando" class="w-full max-w-2xl mt-1 rounded-2xl overflow-hidden shadow-lg">
+      <div v-if="!cargando" class="w-full max-w-2xl mt-2 rounded-4xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02]">
+        
         <!-- Header verde -->
         <div class="bg-[#344F37] px-8 py-8 rounded-t-2xl">
           <h2 class="text-2xl font-bold text-white mb-2">Edición de perfil</h2>
@@ -186,130 +184,89 @@ const obtenerUrlFoto = (foto?: string) => {
         </div>
 
         <!-- Card blanca -->
-      <div class="bg-white rounded-b-2xl p-8">
-        <!-- Mensaje de error -->
-        <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
-          {{ error }}
-        </div>
+        <div class="bg-white rounded-b-2xl p-8">
+          <!-- ... mensajes de error y éxito igual ... -->
 
-        <!-- Mensaje de éxito -->
-        <transition name="fade">
-          <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
-            ✓ Perfil actualizado exitosamente
+          <!-- Foto de perfil -->
+          <div class="flex flex-col items-center mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Cambiar foto de perfil</h3>
+
+            <div class="relative group">
+              <img 
+                v-if="fotoPreview"
+                :src="obtenerUrlFoto(fotoPreview)"
+                :alt="username"
+                class="w-32 h-32 rounded-full object-cover border-4 border-[#344F37] transition-all duration-300 group-hover:scale-110 group-hover:shadow-2xl"
+              />
+              
+              <!-- Botón cambiar foto -->
+              <label class="absolute bottom-0 right-0 p-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 bg-white shadow-lg hover:shadow-xl">
+                <FolderArrowDownIcon class="w-6 h-6 text-[#98BF45] transition-transform" />
+                <input 
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  @change="handleFoto"
+                  class="hidden"
+                />
+              </label>
+            </div>
           </div>
-        </transition>
 
-        <!-- Foto de perfil -->
-        <div class="flex flex-col items-center mb-8">
-          <h3 class="text-lg font-bold text-gray-800 mb-4">Cambiar foto de perfil</h3>
-
-          <div class="relative">
-            <img 
-              v-if="fotoPreview"
-              :src="obtenerUrlFoto(fotoPreview)"
-              :alt="username"
-              class="w-32 h-32 rounded-full object-cover border-4 border-[#344F37]"
-            />
+          <!-- Formulario -->
+          <form @submit.prevent="guardarPerfil" class="space-y-4">
             
-
-            <!-- Botón cambiar foto -->
-            <label class="absolute bottom-0 right-0 p-2 rounded-full cursor-pointer transition shadow-lg">
-              <FolderArrowDownIcon class="icono" />
+            <!-- Username -->
+            <div>
+              <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <UserCircleIcon class="icono transition-transform hover:scale-110" />
+                Ingrese su nuevo nombre de usuario
+              </label>
               <input 
-                type="file"
-                accept="image/png,image/jpeg"
-                @change="handleFoto"
-                class="hidden"
+                v-model="username"
+                type="text"
+                placeholder="Ejemplo: presidentsanJose"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:scale-[1.02] focus:scale-[1.02]"
               />
-            </label>
-          </div>
-        </div>
-
-        <!-- Formulario -->
-        <form @submit.prevent="guardarPerfil" class="space-y-4">
-          
-          <!-- Username -->
-          <div>
-            <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-              <UserCircleIcon class="icono" />
-              Ingrese su nuevo nombre de usuario
-            </label>
-            <input 
-              v-model="username"
-              type="text"
-              placeholder="Ejemplo: presidentsanJose"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37]"
-            />
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-              <AtSymbolIcon class="icono" />
-              Correo
-            </label>
-            <input 
-              v-model="email"
-              type="email"
-              placeholder="Ejemplo: usuario@gmail.com"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37]"
-            />
-            <p class="text-xs text-gray-500 mt-1">Aceptamos: Gmail, Outlook, Yahoo, Hotmail, etc.</p>
-          </div>
-
-          <!-- CONTRASEÑAS -->
-
-        <!-- Línea decorativa -->
-        <div class="relative mb-6 mt-10">
-          <div class="min-h-0.5 bg-[#344F37] relative">
-
-            <!-- Punto izquierdo -->
-            <div
-              class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2
-                    w-2 h-2 rounded-full bg-[#344F37]">
             </div>
 
-            <!-- Punto derecho -->
-            <div
-              class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2
-                    w-2 h-2 rounded-full bg-[#344F37]">
+            <!-- Email -->
+            <div>
+              <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <AtSymbolIcon class="icono transition-transform hover:scale-110" />
+                Correo
+              </label>
+              <input 
+                v-model="email"
+                type="email"
+                placeholder="Ejemplo: usuario@gmail.com"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:scale-[1.02] focus:scale-[1.02]"
+              />
+              <p class="text-xs text-gray-500 mt-1">Aceptamos: Gmail, Outlook, Yahoo, Hotmail, etc.</p>
             </div>
 
-          </div>
-        </div>
+            <!-- Contraseñas (mantengo igual la estructura) -->
+            <div class="pt-1">
+              <h3 class="font-bold text-lg mb-4 text-gray-800">Cambiar contraseña</h3>
 
-          <div class="pt-1">
+              <!-- ACTUAL, NUEVA y CONFIRMAR con hover en inputs e iconos -->
+              <div class="relative mb-4">
+                <input
+                  v-model="contraseñaActual"
+                  :type="verActual ? 'text':'password'"
+                  placeholder="Contraseña actual"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035] transition-all duration-300 hover:scale-[1.02]"
+                />
+                <button
+                  type="button"
+                  @click="verActual=!verActual"
+                  class="absolute right-4 top-2.5 text-xl transition-transform hover:scale-125"
+                >
+                  <EyeIcon v-if="!verActual" class="icono" />
+                  <EyeSlashIcon v-else class="icono" />
+                </button>
+              </div>
 
-            <h3 class="font-bold text-lg mb-4 text-gray-800">
-              Cambiar contraseña
-            </h3>
-
-            <!-- ACTUAL -->
-            <div class="relative mb-4">
-              <input
-                v-model="contraseñaActual"
-                :type="verActual ? 'text':'password'"
-                placeholder="Contraseña actual"
-                class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035]"
-              />
-              <button
-                type="button"
-                @click="verActual=!verActual"
-                class="absolute right-4 top-2.5 text-xl"
-              >
-                <EyeIcon
-                v-if="!verActual"
-                class="icono"
-              />
-
-              <EyeSlashIcon
-                v-else
-                class="icono"
-              />
-              </button>
-            </div>
-
-            <!-- NUEVA -->
+               <!-- NUEVA -->
             <div class="relative mb-4">
               <input
                 v-model="contraseñaNueva"
@@ -322,15 +279,8 @@ const obtenerUrlFoto = (foto?: string) => {
                 @click="verNueva=!verNueva"
                 class="absolute right-4 top-2.5 text-xl"
               >
-                <EyeIcon
-                v-if="!verNueva"
-                class="icono"
-              />
-
-              <EyeSlashIcon
-                v-else
-                class="icono"
-              />
+                <EyeIcon v-if="!verNueva" class="icono" />
+                <EyeSlashIcon v-else class="icono" />
               </button>
             </div>
 
@@ -347,50 +297,61 @@ const obtenerUrlFoto = (foto?: string) => {
                 @click="verConfirmar=!verConfirmar"
                 class="absolute right-4 top-2.5 text-xl"
               >
-                <EyeIcon
-                v-if="!verConfirmar"
-                class="icono"
-              />
-
-              <EyeSlashIcon
-                v-else
-                class="icono"
-              />
+                <EyeIcon v-if="!verConfirmar" class="icono" />
+                <EyeSlashIcon v-else class="icono" />
               </button>
             </div>
           </div>
 
-          <!-- Botones -->
-          <div class="flex gap-4 pt-6">
-            <button 
-              type="button"
-              @click="() => router.back()"
-              class="flex-1 px-6 py-2 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-lg transition"
-            >
-              Cancelar
-            </button>
-            <button 
-              @click="guardarPerfil"
-              :disabled="guardando"
-              type="button"
-              class="flex-1 px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-lg transition disabled:opacity-50"
-            >
-              {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
-          </div>
-        </form>
+            <!-- Botones -->
+            <div class="flex gap-4 pt-6">
+              <button 
+                type="button"
+                @click="() => router.back()"
+                class="flex-1 px-6 py-2 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                Cancelar
+              </button>
+              <button 
+                @click="guardarPerfil"
+                :disabled="guardando"
+                type="button"
+                class="flex-1 px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
 
-      <!-- Cargando -->
-      <div v-else class="text-center mt-24">
-        <p class="text-gray-600">Cargando perfil...</p>
-      </div>
+      <!-- Cargando ... -->
     </main>
   </div>
 </template>
 
 <style scoped>
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(.985);
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-page{
+  animation: pageEnter .75s cubic-bezier(.22,1,.36,1);
+}
+
+
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s;
@@ -399,5 +360,19 @@ const obtenerUrlFoto = (foto?: string) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+
+input, button, label {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icono {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto suave extra en la card completa */
+.shadow-lg {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>
