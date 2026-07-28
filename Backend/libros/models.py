@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from cloudinary_storage.storage import MediaCloudinaryStorage
+
 
 
 class Libro(models.Model):
@@ -41,7 +41,5 @@ class Libro(models.Model):
         return self.titulo
 
     def save(self, *args, **kwargs):
-        # Eliminamos la compresión manual por Pillow que bloqueaba el flujo hacia Cloudinary.
-        # Cloudinary optimiza y maneja la subida por sí mismo de forma nativa.
         self.actualizado_en = timezone.now()
         super().save(*args, **kwargs)
