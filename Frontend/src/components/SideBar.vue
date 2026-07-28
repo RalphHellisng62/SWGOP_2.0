@@ -7,8 +7,8 @@ import {
   BookOpenIcon, 
   ChevronDoubleLeftIcon, 
   ChevronDoubleRightIcon,
-  ClipboardDocumentListIcon, 
-  
+  ClipboardDocumentListIcon,
+  PencilSquareIcon, 
 } from '@heroicons/vue/24/solid';
 import router from '../router';
 import { useRoute } from 'vue-router';
@@ -19,7 +19,7 @@ const { usuarioGlobal, cargarUsuario, inicializarDesdeLocalStorage, limpiarUsuar
 const claseBoton = (ruta: string) => {
   return route.path === ruta
     ? 'bg-[#344F37] text-white hover:bg-[#98BF45]'
-    : 'bg-white text-[#344F37]';
+    : 'bg-white text-[#344F37] hover:bg-gray-100';
 };
 
 const abierto = ref(true);
@@ -84,23 +84,26 @@ const obtenerUrlFoto = (foto?: string) => {
 <template>
   <div 
     :class="[
-      'bg-white shadow-lg flex flex-col rounded-4xl transition-all duration-300',
+      'bg-white shadow-lg flex flex-col rounded-4xl transition-all duration-300 ease-in-out select-none',
       abierto ? 'w-64' : 'w-20', 
       'min-h-screen'
     ]"
   >
     <!-- Toggle -->
     <div class="flex justify-end p-4 bg-white rounded-tl-4xl rounded-tr-4xl">
-      <button @click="toggleSidebar" class="text-gray-700">
-        <ChevronDoubleLeftIcon v-if="abierto" class="icono" />
-        <ChevronDoubleRightIcon v-else class="icono" />
+      <button 
+        @click="toggleSidebar" 
+        class="text-gray-700 hover:text-[#344F37] transition-all duration-300 ease-out hover:scale-110 active:scale-90 p-1 rounded-full cursor-pointer focus:outline-none"
+      >
+        <ChevronDoubleLeftIcon v-if="abierto" class="w-6 h-6" />
+        <ChevronDoubleRightIcon v-else class="w-6 h-6" />
       </button>
     </div>
 
     <!-- Logo -->
     <div class="pt-0 px-6 pb-6">
       <div class="flex justify-center mb-1 -mt-4" v-if="abierto">
-        <div class="w-32 h-32 rounded-full flex items-center justify-center">
+        <div class="w-32 h-32 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-105">
           <img
             src="/LOGO SAN JOSE.png"
             alt="Logo"
@@ -120,17 +123,17 @@ const obtenerUrlFoto = (foto?: string) => {
     <!-- Perfil -->
     <div class="p-6 border-b border-green-200">
       <div class="flex justify-center mb-4" v-if="abierto">
-        <div class="relative">
+        <div class="relative group cursor-pointer" @click="editarPerfil">
           <img
             v-if="usuarioGlobal?.foto"
             :key="usuarioGlobal.foto"
             :src="obtenerUrlFoto(usuarioGlobal.foto)"
             :alt="usuarioGlobal?.username"
-            class="w-20 h-20 rounded-full object-cover border-2 border-[#344F37]"
+            class="w-20 h-20 rounded-full object-cover border-2 border-[#344F37] transition-all duration-300 group-hover:scale-105 group-hover:shadow-md"
           />
           <div 
             v-else 
-            class="w-20 h-20 bg-gradient-to from-pink-300 to-pink-400 rounded-full flex items-center justify-center text-2xl border-4 border-[#344F37]"
+            class="w-20 h-20 bg-gradient-to from-pink-300 to-pink-400 rounded-full flex items-center justify-center text-2xl border-4 border-[#344F37] transition-all duration-300 group-hover:scale-105 group-hover:shadow-md"
           >
             👤
           </div>
@@ -138,16 +141,17 @@ const obtenerUrlFoto = (foto?: string) => {
       </div>
 
       <div class="text-center mb-4" v-if="abierto">
-        <p class="text-gray-600 text-sm">@{{ usuarioGlobal?.username || 'Usuario' }}</p>
+        <p class="text-gray-600 text-sm font-medium">@{{ usuarioGlobal?.username || 'Usuario' }}</p>
       </div>
 
       <button
-        v-if="abierto"
-        @click="editarPerfil"
-        class="w-full text-center text-[#344F37] font-semibold underline py-2 hover:text-[#98BF45] transition-colors"
-      >
-        Editar perfil
-      </button>
+      v-if="abierto"
+      @click="editarPerfil"
+      class="w-full text-[#344F37] font-semibold underline py-2 flex items-center justify-center gap-2 hover:text-[#98BF45] transition-all duration-300 ease-out hover:scale-105 active:scale-95 cursor-pointer"
+    >
+      <PencilSquareIcon class="w-5 h-5 shrink-0" />
+      <span class="whitespace-nowrap">Editar perfil</span>
+    </button>
 
       <div class="relative mt-5">
         <div class="min-h-0.5 bg-[#98BF45]">
@@ -163,22 +167,26 @@ const obtenerUrlFoto = (foto?: string) => {
         @click="irAInventario"
         :class="[
           claseBoton('/inventario'),
-          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300'
+          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300 ease-out hover:scale-105 active:scale-95 shadow-sm cursor-pointer'
         ]"
       >
-        <BookOpenIcon class="w-6 h-6" />
-        <span v-if="abierto">Inventario</span>
+        <BookOpenIcon class="w-6 h-6 shrink-0" />
+        <Transition name="fade-fast">
+          <span v-if="abierto" class="whitespace-nowrap">Inventario</span>
+        </Transition>
       </button>
 
       <button
         @click="irAPrestamos"
         :class="[
           claseBoton('/prestamos'),
-          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300'
+          'w-full font-semibold py-3 rounded-4xl flex items-center justify-center gap-2 transition-all duration-300 ease-out hover:scale-105 active:scale-95 shadow-sm cursor-pointer'
         ]"
       >
-        <ClipboardDocumentListIcon class="w-6 h-6" />
-        <span v-if="abierto">Préstamos</span>
+        <ClipboardDocumentListIcon class="w-6 h-6 shrink-0" />
+        <Transition name="fade-fast">
+          <span v-if="abierto" class="whitespace-nowrap">Préstamos</span>
+        </Transition>
       </button>
     </div>
 
@@ -193,11 +201,27 @@ const obtenerUrlFoto = (foto?: string) => {
 
       <button
         @click="cerrarSesion"
-        class="w-full text-[#344F37] font-semibold underline text-center py-2 flex items-center justify-center gap-2 hover:text-[#98BF45] transition-colors"
+        class="w-full text-[#344F37] font-semibold underline text-center py-2 flex items-center justify-center gap-2 hover:text-[#98BF45] transition-all duration-300 ease-out hover:scale-105 active:scale-95 cursor-pointer"
       >
-        <ArrowRightStartOnRectangleIcon class="icono" />
-        <span v-if="abierto">Cerrar sesión</span>
+        <ArrowRightStartOnRectangleIcon class="w-6 h-6 shrink-0" />
+        <Transition name="fade-fast">
+          <span v-if="abierto" class="whitespace-nowrap">Cerrar sesión</span>
+        </Transition>
       </button>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Animación suave para la aparición del texto del menú */
+.fade-fast-enter-active,
+.fade-fast-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-fast-enter-from,
+.fade-fast-leave-to {
+  opacity: 0;
+  transform: translateX(-6px);
+}
+</style>

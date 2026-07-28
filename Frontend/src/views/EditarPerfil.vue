@@ -225,7 +225,7 @@ const obtenerUrlFoto = (foto?: string) => {
                 v-model="username"
                 type="text"
                 placeholder="Ejemplo: presidentsanJose"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:scale-[1.02] focus:scale-[1.02]"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:shadow-md focus:scale-[1.02]"
               />
             </div>
 
@@ -239,7 +239,7 @@ const obtenerUrlFoto = (foto?: string) => {
                 v-model="email"
                 type="email"
                 placeholder="Ejemplo: usuario@gmail.com"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:scale-[1.02] focus:scale-[1.02]"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] transition-all duration-300 hover:shadow-md focus:scale-[1.02]"
               />
               <p class="text-xs text-gray-500 mt-1">Aceptamos: Gmail, Outlook, Yahoo, Hotmail, etc.</p>
             </div>
@@ -254,7 +254,7 @@ const obtenerUrlFoto = (foto?: string) => {
                   v-model="contraseñaActual"
                   :type="verActual ? 'text':'password'"
                   placeholder="Contraseña actual"
-                  class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035] transition-all duration-300 hover:scale-[1.02]"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035] transition-all duration-300 hover:shadow-md focus:scale-[1.02]"
                 />
                 <button
                   type="button"
@@ -272,7 +272,7 @@ const obtenerUrlFoto = (foto?: string) => {
                 v-model="contraseñaNueva"
                 :type="verNueva ? 'text':'password'"
                 placeholder="Nueva contraseña"
-                class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035]"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035] transition-all duration-300 hover:shadow-md focus:scale-[1.02]"
               />
               <button
                 type="button"
@@ -290,7 +290,7 @@ const obtenerUrlFoto = (foto?: string) => {
                 v-model="contraseñaConfirmar"
                 :type="verConfirmar ? 'text':'password'"
                 placeholder="Confirmar contraseña"
-                class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035]"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-[#F2B035] transition-all duration-300 hover:shadow-md focus:scale-[1.02]"
               />
               <button
                 type="button"
@@ -308,7 +308,7 @@ const obtenerUrlFoto = (foto?: string) => {
               <button 
                 type="button"
                 @click="() => router.back()"
-                class="flex-1 px-6 py-2 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-105 active:scale-95"
+                class="flex-1 px-6 py-2 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-[1.03] active:scale-95"
               >
                 Cancelar
               </button>
@@ -316,7 +316,7 @@ const obtenerUrlFoto = (foto?: string) => {
                 @click="guardarPerfil"
                 :disabled="guardando"
                 type="button"
-                class="flex-1 px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex-1 px-6 py-2 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-4xl transition-all duration-300 hover:scale-[1.03] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
               </button>

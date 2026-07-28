@@ -4,11 +4,11 @@ import { recuperacionService } from '../services/recuperacionService';
 import { EnvelopeIcon, XCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid';
 
 const props = defineProps<{
-    isOpen: boolean
+  isOpen: boolean
 }>()
 
 const emit = defineEmits<{
-    cerrar: []
+  cerrar: []
 }>()
 
 type Paso = 'enviar' | 'verificar' | 'cambiar' | 'completado';
@@ -140,198 +140,272 @@ const volverAEnviar = () => {
 </script>
 
 <template>
-  <Transition name="step" mode="out-in">
-    <div v-if="props.isOpen" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+  <Transition name="fade-modal">
+    <div v-if="props.isOpen" class="fixed inset-0 bg-black/25 backdrop-blur-sm flex items-center justify-center z-50 p-4 select-none">
+      <div class="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md transform transition-all">
 
         <!-- Header -->
-        <div class="flex justify-between items-start px-6 py-5 bg-[#344F37] rounded-2xl">
+        <div class="flex justify-between items-start px-6 py-5 bg-[#344F37] rounded-4xl shadow-md">
           <div>
             <h2 class="text-2xl font-bold text-white">Recuperar contraseña</h2>
-            <p class="text-gray-300 text-sm mt-1">Sigue los pasos para cambiar tu contraseña</p>
+            <p class="text-gray-200 text-sm mt-1">Sigue los pasos para cambiar tu contraseña</p>
           </div>
-          <button @click="emit('cerrar')" class="text-gray-400 hover:text-white transition">
-            <XCircleIcon class="w-7 h-7 icono2" />
+          <button 
+            @click="emit('cerrar')" 
+            class="text-gray-300 hover:text-white transition-all duration-300 hover:scale-110 active:scale-90 cursor-pointer p-1"
+          >
+            <XCircleIcon class="w-7 h-7" />
           </button>
         </div>
 
         <!-- Progress Bar -->
-        <div class="px-6 pt-6">
+        <div class="px-2 pt-6">
           <div class="flex items-center justify-between">
             <!-- Paso 1 -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white transition-colors"
-                :class="paso === 'enviar' ? 'bg-[#344F37]' : 'bg-[#98BF45]'">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300 shadow-sm"
+                :class="paso === 'enviar' ? 'bg-[#344F37] scale-110' : 'bg-[#98BF45]'">
               1
             </div>
 
             <!-- Línea 1 -->
-            <div class="flex-1 h-1 bg-gray-300 mx-2 relative">
+            <div class="flex-1 h-1 bg-gray-400 mx-2 relative rounded-full overflow-hidden">
               <div class="h-1 bg-[#98BF45] transition-all duration-500 absolute left-0 top-0"
                   :style="{ width: ['verificar','cambiar','completado'].includes(paso) ? '100%' : '0%' }"></div>
             </div>
 
             <!-- Paso 2 -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white transition-colors"
-                :class="['verificar','cambiar','completado'].includes(paso) ? 'bg-[#344F37]' : 'bg-gray-200 text-gray-500'">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300 shadow-sm"
+                :class="['verificar','cambiar','completado'].includes(paso) ? (paso === 'verificar' ? 'bg-[#344F37] scale-110' : 'bg-[#98BF45]') : 'bg-gray-400 text-gray-200'">
               2
             </div>
 
             <!-- Línea 2 -->
-            <div class="flex-1 h-1 bg-gray-300 mx-2 relative">
+            <div class="flex-1 h-1 bg-gray-400 mx-2 relative rounded-full overflow-hidden">
               <div class="h-1 bg-[#98BF45] transition-all duration-500 absolute left-0 top-0"
                   :style="{ width: ['cambiar','completado'].includes(paso) ? '100%' : '0%' }"></div>
             </div>
 
             <!-- Paso 3 -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white transition-colors"
-                :class="['cambiar','completado'].includes(paso) ? 'bg-[#344F37]' : 'bg-gray-200 text-gray-500'">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300 shadow-sm"
+                :class="['cambiar','completado'].includes(paso) ? (paso === 'cambiar' ? 'bg-[#344F37] scale-110' : 'bg-[#98BF45]') : 'bg-gray-400 text-gray-200'">
               3
             </div>
 
             <!-- Línea 3 -->
-            <div class="flex-1 h-1 bg-gray-300 mx-2 relative">
+            <div class="flex-1 h-1 bg-gray-400 mx-2 relative rounded-full overflow-hidden">
               <div class="h-1 bg-[#98BF45] transition-all duration-500 absolute left-0 top-0"
                   :style="{ width: paso === 'completado' ? '100%' : '0%' }"></div>
             </div>
 
             <!-- Paso 4 -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white transition-colors"
-                :class="paso === 'completado' ? 'bg-[#344F37]' : 'bg-gray-200 text-gray-500'">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-all duration-300 shadow-sm"
+                :class="paso === 'completado' ? 'bg-[#344F37] scale-110' : 'bg-gray-400 text-gray-200'">
               4
             </div>
           </div>
 
-          <p class="text-center text-sm mt-3 text-gray-500">
+          <p class="text-center text-sm mt-3 text-gray-500 font-medium">
             Paso {{ paso === 'enviar' ? 1 : paso === 'verificar' ? 2 : paso === 'cambiar' ? 3 : 4 }} de 4
           </p>
         </div>
 
-        <!-- PASO 1 -->
-        <div v-if="paso === 'enviar'" key="enviar" class="px-1 pt-3 space-y-4">
-          <p class="text-gray-700 font-semibold">Ingresa tu email</p>
+        <!-- Transición interna para los pasos -->
+        <Transition name="fade-step" mode="out-in">
+          
+          <!-- PASO 1 -->
+          <div v-if="paso === 'enviar'" key="enviar" class="px-1 pt-4 space-y-4">
+            <p class="text-gray-700 font-semibold">Por favor, ingrese el correo electrónico asociado a su cuenta</p>
 
-          <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
-            {{ error }}
+            <div v-if="error" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg text-sm animate-pulse">
+              {{ error }}
+            </div>
+
+            <div class="relative">
+              <input
+                v-model="email"
+                type="email"
+                placeholder="example@correo.com"
+                class="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:border-[#344F37] transition-all duration-300 ease-out hover:shadow-md"
+              />
+              <EnvelopeIcon class="w-6 h-6 icono absolute right-4 top-3.5 pointer-events-none" />
+            </div>
+
+            <div class="flex gap-3 pt-2">
+              <button 
+                @click="volverAlLogin"
+                class="flex-1 py-3 bg-[#D9298A] hover:bg-[#690035] text-white font-semibold rounded-4xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                Volver
+              </button>
+              <button 
+                @click="enviarCodigo" 
+                :disabled="cargando"
+                class="flex-1 py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded-4xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+              >
+                {{ cargando ? 'Enviando...' : 'Enviar código' }}
+              </button>
+            </div>
           </div>
 
-          <div class="relative">
+          <!-- PASO 2 -->
+          <div v-else-if="paso === 'verificar'" key="verificar" class="px-1 pt-4 space-y-4">
+            <div class="text-center">
+              <p class="text-gray-700 font-semibold mb-1">Código recibido</p>
+              <p class="text-sm text-gray-500 mb-3">Ingresa el código de 6 dígitos</p>
+              <p class="text-sm font-bold text-[#D9298A] bg-pink-50 py-1.5 px-4 rounded-full inline-block">
+                ⏱️ Tiempo restante: {{ formatearTiempo(tiempoRestante) }}
+              </p>
+            </div>
+
+            <div v-if="error" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg text-sm animate-pulse">
+              {{ error }}
+            </div>
+
             <input
-              v-model="email"
-              type="email"
-              placeholder="Ingrese el email asociado a tu cuenta"
-              class="w-full px-4 py-3 border border-[#344F37] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37]"
+              v-model="codigo"
+              type="text"
+              maxlength="6"
+              placeholder="000000"
+              class="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:border-[#344F37] text-center text-3xl tracking-widest font-mono font-bold transition-all duration-300 ease-out hover:shadow-md"
             />
-            <EnvelopeIcon class="icono absolute right-4 top-4 text-gray-400" />
+
+            <div class="flex gap-3 pt-2">
+              <button 
+                @click="volverAEnviar"
+                class="flex-1 py-3 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-4xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                Atrás
+              </button>
+              <button 
+                @click="verificarCodigo" 
+                :disabled="cargando"
+                class="flex-1 py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-4xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+              >
+                {{ cargando ? 'Verificando...' : 'Verificar' }}
+              </button>
+            </div>
           </div>
 
-          <div class="flex gap-2">
-            <button @click="volverAlLogin"
-                    class="flex-1 py-3 bg-[#D9298A] hover:bg-[#690035] text-white font-semibold rounded-lg transition">
-              Volver
-            </button>
-            <button @click="enviarCodigo" :disabled="cargando"
-                    class="flex-1 py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-semibold rounded-lg transition disabled:opacity-50">
-              {{ cargando ? 'Enviando...' : 'Enviar código' }}
-            </button>
-          </div>
-        </div>
+          <!-- PASO 3 -->
+          <div v-else-if="paso === 'cambiar'" key="cambiar" class="px-1 pt-4 space-y-4">
+            <p class="text-gray-700 font-semibold">Nueva contraseña</p>
 
-        <!-- PASO 2 -->
-        <div v-else-if="paso === 'verificar'" key="verificar" class="px-1 pt-3 space-y-4">
-          <div class="text-center">
-            <p class="text-gray-700 font-semibold mb-2">Código recibido</p>
-            <p class="text-sm text-gray-600 mb-4">Ingresa el código de 6 dígitos</p>
-            <p class="text-sm font-semibold text-[#D9298A]">
-              Tiempo restante: {{ formatearTiempo(tiempoRestante) }}
-            </p>
-          </div>
+            <div v-if="error" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg text-sm animate-pulse">
+              {{ error }}
+            </div>
+            <div v-if="exito" class="bg-green-50 border-l-4 border-green-500 text-green-700 p-3 rounded-lg text-sm">
+              {{ exito }}
+            </div>
 
-          <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
-            {{ error }}
-          </div>
+            <!-- Nueva contraseña -->
+            <div class="relative">
+              <input
+                v-model="nuevaContraseña"
+                :type="verContraseña ? 'text' : 'password'"
+                placeholder="Nueva contraseña"
+                class="w-full px-4 py-3 border border-[#344F37] rounded-4xl focus:outline-none focus:ring-2 focus:ring-[#344F37] pr-12 transition-all"
+              />
+              <button 
+                type="button" 
+                @click="verContraseña = !verContraseña"
+                class="absolute right-4 top-3.5 text-gray-500 hover:text-[#344F37] transition-colors cursor-pointer"
+              >
+                <EyeIcon v-if="verContraseña" class="w-5 h-5" />
+                <EyeSlashIcon v-else class="w-5 h-5" />
+              </button>
+            </div>
 
-          <input
-            v-model="codigo"
-            type="text"
-            maxlength="6"
-            placeholder="000000"
-            class="w-full px-4 py-3 border border-[#344F37] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] text-center text-2xl tracking-widest font-mono"
-          />
+            <!-- Confirmar -->
+            <div class="relative">
+              <input
+                v-model="confirmarContraseña"
+                :type="verConfirmar ? 'text' : 'password'"
+                placeholder="Confirmar contraseña"
+                class="w-full px-4 py-3 border border-[#344F37] rounded-4xl focus:outline-none focus:ring-2 focus:ring-[#344F37] pr-12 transition-all"
+              />
+              <button 
+                type="button" 
+                @click="verConfirmar = !verConfirmar"
+                class="absolute right-4 top-3.5 text-gray-500 hover:text-[#344F37] transition-colors cursor-pointer"
+              >
+                <EyeIcon v-if="verConfirmar" class="w-5 h-5" />
+                <EyeSlashIcon v-else class="w-5 h-5" />
+              </button>
+            </div>
 
-          <div class="flex gap-2">
-            <button @click="volverAEnviar"
-                    class="flex-1 py-3 bg-[#D9298A] hover:bg-[#690035] text-white font-bold rounded-lg transition">
-              Atrás
-            </button>
-            <button @click="verificarCodigo" :disabled="cargando"
-                    class="flex-1 py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-lg transition disabled:opacity-50">
-              {{ cargando ? 'Verificando...' : 'Verificar' }}
-            </button>
-          </div>
-        </div>
-
-        <!-- PASO 3 -->
-        <div v-else-if="paso === 'cambiar'" key="cambiar" class="px-1 pt-3 space-y-4">
-          <p class="text-gray-700 font-semibold">Nueva contraseña</p>
-
-          <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
-            {{ error }}
-          </div>
-          <div v-if="exito" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm">
-            {{ exito }}
-          </div>
-
-          <!-- Nueva contraseña -->
-          <div class="relative">
-            <input
-              v-model="nuevaContraseña"
-              :type="verContraseña ? 'text' : 'password'"
-              placeholder="Nueva contraseña"
-              class="w-full px-4 py-3 border border-[#344F37] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] pr-12"
-            />
-            <button type="button" @click="verContraseña = !verContraseña"
-                    class="icono absolute right-4 top-3.5 text-gray-500">
-              <EyeIcon v-if="verContraseña" class="w-5 h-5" />
-              <EyeSlashIcon v-else class="w-5 h-5" />
-            </button>
-          </div>
-
-          <!-- Confirmar -->
-          <div class="relative">
-            <input
-              v-model="confirmarContraseña"
-              :type="verConfirmar ? 'text' : 'password'"
-              placeholder="Confirmar contraseña"
-              class="w-full px-4 py-3 border border-[#344F37] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#344F37] pr-12"
-            />
-            <button type="button" @click="verConfirmar = !verConfirmar"
-                    class="icono absolute right-4 top-3.5 text-gray-500">
-              <EyeIcon v-if="verConfirmar" class="w-5 h-5" />
-              <EyeSlashIcon v-else class="w-5 h-5" />
+            <button 
+              @click="cambiarContraseña" 
+              :disabled="cargando"
+              class="w-full py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-4xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer mt-2"
+            >
+              {{ cargando ? 'Cambiando...' : 'Cambiar contraseña' }}
             </button>
           </div>
 
-          <button @click="cambiarContraseña" :disabled="cargando"
-                  class="w-full py-3 bg-[#344F37] hover:bg-[#98BF45] text-white font-bold rounded-lg transition disabled:opacity-50">
-            {{ cargando ? 'Cambiando...' : 'Cambiar contraseña' }}
-          </button>
-        </div>
+          <!-- PASO 4 - Completado -->
+          <div v-else-if="paso === 'completado'" key="completado" class="px-1 pt-6 space-y-4 text-center">
+            <div class="w-20 h-20 rounded-full bg-green-100 mx-auto flex items-center justify-center shadow-inner animate-bounce">
+              <span class="text-5xl">✅</span>
+            </div>
+            <h2 class="text-2xl font-bold text-[#344F37]">¡Contraseña actualizada!</h2>
+            <p class="text-gray-600 text-sm">Ahora puedes iniciar sesión con tu nueva contraseña.</p>
 
-        <!-- PASO 4 - Completado -->
-        <div v-else-if="paso === 'completado'" key="completado" class="px-1 pt-3 space-y-4">
-          <div class="w-24 h-24 rounded-full bg-green-100 mx-auto flex items-center justify-center">
-            <span class="text-6xl">✅</span>
+            <button 
+              @click="emit('cerrar')"
+              class="w-full py-3 rounded-4xl bg-[#344F37] hover:bg-[#98BF45] text-white font-bold shadow-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer mt-4"
+            >
+              Volver al inicio de sesión
+            </button>
           </div>
-          <h2 class="text-2xl font-bold text-[#344F37]">¡Contraseña actualizada!</h2>
-          <p class="text-gray-600">Ahora puedes iniciar sesión con tu nueva contraseña.</p>
 
-          <button @click="emit('cerrar')"
-                  class="w-full py-3 rounded-xl bg-[#344F37] hover:bg-[#98BF45] text-white font-bold transition">
-            Volver al inicio de sesión
-          </button>
-        </div>
+        </Transition>
 
       </div>
     </div>
   </Transition>
 </template>
+
+<style scoped>
+/* Transición general para abrir/cerrar el modal */
+.fade-modal-enter-active,
+.fade-modal-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+input, button, label {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icono {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-modal-enter-from,
+.fade-modal-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Transición suave al cambiar entre pasos */
+.fade-step-enter-active,
+.fade-step-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-step-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.fade-step-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+  
+}
+
+
+.anim-logo{
+  animation: logo .9s ease forwards;
+}
+</style>
