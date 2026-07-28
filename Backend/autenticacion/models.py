@@ -9,7 +9,7 @@ import secrets
 
 class PerfilUsuario(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    foto = models.ImageField(upload_to='perfiles/', storage=MediaCloudinaryStorage(), null=True, blank=True)
+    foto = models.URLField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return f"Perfil de {self.usuario.username}"

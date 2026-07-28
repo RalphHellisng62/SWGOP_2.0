@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { librosService } from '../services/librosService';
+import { supabase } from '../services/supabaseClient'; // <--- 1. Importas tu cliente de Supabase
 import { FolderArrowDownIcon, ArrowLeftCircleIcon } from '@heroicons/vue/24/solid';
 
 interface Libro {
@@ -115,15 +116,39 @@ const guardarCambios = async () => {
   error.value = '';
   
   try {
+    let urlImagenFinal = libro.value?.foto || ''; // Mantenemos la foto actual por defecto
+
+    // 2. Si el usuario seleccionó una NUEVA foto, la subimos a Supabase
+    if (fotoFile.value) {
+      const fileExt = fotoFile.value.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('swigb-files') // Nombre de tu bucket en Supabase
+        .upload(fileName, fotoFile.value);
+
+      if (uploadError) {
+        throw new Error(`Error al subir la imagen a Supabase: ${uploadError.message}`);
+      }
+
+      // Obtenemos su URL pública
+      const { data: publicURLData } = supabase.storage
+        .from('swigb-files') // Nombre de tu bucket en Supabase
+        .getPublicUrl(fileName);
+
+      urlImagenFinal = publicURLData.publicUrl;
+    }
+
+    // 3. Preparamos el objeto plano con la URL de Supabase para enviarlo a Django
     const datosActualizados = {
       nt: nt.value,
       etiqueta: etiqueta.value,
       titulo: titulo.value,
       autor: autor.value,
       categoria: categoria.value,
-      ejemplares: ejemplares.value,
+      ejemplares: Number(ejemplares.value),
       estado: estado.value,
-      foto: fotoFile.value
+      foto: urlImagenFinal || null, // Mandamos la URL en formato texto
     };
 
     await librosService.actualizarLibro(props.libroId, datosActualizados);
@@ -137,7 +162,8 @@ const guardarCambios = async () => {
       }, 1000);
     }, 1000);
   } catch (err: any) {
-    error.value = err.response?.data?.detail || 'Error al guardar cambios';
+    console.error('Error al actualizar libro:', err);
+    error.value = err.message || err.response?.data?.detail || 'Error al guardar cambios';
   } finally {
     guardando.value = false;
   }
@@ -170,6 +196,7 @@ const incrementar = () => {
 const decrementar = () => {
   if (ejemplares.value > 1) ejemplares.value--;
 };
+
 </script>
 
 <template>

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import Sidebar from '../components/SideBar.vue';
 import { authService } from '../services/authService';
 import { useUsuario } from '../composables/useUsuario';
+import { supabase } from '../services/supabaseClient'; // <--- 1. Importas tu cliente de Supabase
 import { AtSymbolIcon, FolderArrowDownIcon, UserCircleIcon,
         EyeIcon, EyeSlashIcon 
 } from '@heroicons/vue/24/solid';
@@ -14,7 +15,6 @@ const cargando = ref(true);
 const guardando = ref(false);
 const error = ref('');
 const exito = ref(false);
-
 
 // Campos del formulario
 const username = ref('');
@@ -125,14 +125,35 @@ const guardarPerfil = async () => {
   guardando.value = true;
 
   try {
+    let urlImagenFinal = usuarioGlobal.value?.foto || '';
+
+    // 2. Si el usuario seleccionó una NUEVA foto de perfil, la subimos a Supabase
+    if (fotoFile.value) {
+      const fileExt = fotoFile.value.name.split('.').pop();
+      const fileName = `perfil_${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('media') // Nombre de tu bucket
+        .upload(fileName, fotoFile.value);
+
+      if (uploadError) {
+        throw new Error(`Error al subir la imagen a Supabase: ${uploadError.message}`);
+      }
+
+      // Obtenemos su URL pública
+      const { data: publicURLData } = supabase.storage
+        .from('media')
+        .getPublicUrl(fileName);
+
+      urlImagenFinal = publicURLData.publicUrl;
+    }
+
+    // 3. Preparamos el objeto JSON plano con la URL de Supabase para Django
     const datos: any = {
       username: username.value,
       email: email.value,
+      foto: urlImagenFinal || null, // Mandamos la URL en formato texto
     };
-
-    if (fotoFile.value) {
-      datos.foto = fotoFile.value;
-    }
 
     const response = await authService.actualizarPerfil(datos);
     actualizarUsuario(response.data);
@@ -149,12 +170,15 @@ const guardarPerfil = async () => {
     contraseñaActual.value = '';
     contraseñaNueva.value = '';
     contraseñaConfirmar.value = '';
+    fotoFile.value = null; // Limpiamos la referencia del archivo temporal
 
     setTimeout(() => {
       exito.value = false;
     }, 2000);
   } catch (err: any) {
+    console.error('Error al guardar perfil:', err);
     error.value =
+      err.message ||
       err.response?.data?.detail ||
       err.response?.data?.error ||
       'Error al guardar';
@@ -166,7 +190,7 @@ const guardarPerfil = async () => {
 const obtenerUrlFoto = (foto?: string) => {
   if (!foto) return '';
   if (foto.startsWith('http')) return foto;
-  return `http://localhost:8000${foto}`;
+  return foto; // Como Supabase ya devuelve una URL completa (https://...), ya no necesitamos concatenar el localhost de Django
 };
 </script>
 <template>

@@ -10,7 +10,7 @@ def eliminar_foto_libro(sender, instance, using, **kwargs):
     """
     Cuando se elimina un libro, elimina su foto de media/
     """
-    print(f"\n⚠️  Eliminando libro: {instance.titulo}")
+    print(f"\n  Eliminando libro: {instance.titulo}")
     
     if instance.foto:
         try:

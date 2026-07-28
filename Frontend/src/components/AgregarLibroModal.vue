@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { librosService } from '../services/librosService';
+import { supabase } from '../services/supabaseClient'; // <--- 1. Importas tu cliente de Supabase
 import { ArrowLeftCircleIcon, FolderArrowDownIcon, PhotoIcon } from '@heroicons/vue/24/solid';
 
 const emit = defineEmits<{
@@ -21,7 +22,6 @@ const fotoPreview = ref('');
 const cargando = ref(false);
 const error = ref('');
 const exito = ref(false);
-const mostrarDialogUrl = ref(false);
 
 const categorias = [
   '000-Generalidades',
@@ -49,7 +49,6 @@ const handleFotoArchivo = (event: Event) => {
   }
   
   fotoFile.value = file;
-  fotoUrl.value = '';
   const reader = new FileReader();
   reader.onload = (e) => {
     fotoPreview.value = e.target?.result as string;
@@ -73,36 +72,42 @@ const agregarLibro = async () => {
   cargando.value = true;
   
   try {
-    if (fotoFile.value instanceof File || fotoUrl.value) {
-      const formData = new FormData();
-      formData.append('nt', nt.value);
-      formData.append('etiqueta', etiqueta.value);
-      formData.append('titulo', titulo.value);
-      formData.append('autor', autor.value);
-      formData.append('categoria', categoria.value);
-      formData.append('estado', estado.value);
-      formData.append('ejemplares', String(ejemplares.value));
+    let urlImagenFinal = '';
 
-      if (fotoFile.value instanceof File) {
-        formData.append('foto', fotoFile.value);
-      } else if (fotoUrl.value) {
-        formData.append('foto_url', fotoUrl.value);
+    // 2. Si el usuario seleccionó una foto, la subimos primero a Supabase Storage
+    if (fotoFile.value) {
+      const fileExt = fotoFile.value.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('swigb-files') // Nombre de tu bucket en Supabase
+        .upload(fileName, fotoFile.value);
+
+      if (uploadError) {
+        throw new Error(`Error al subir la imagen a Supabase: ${uploadError.message}`);
       }
-      
-      await librosService.crearLibro(formData);
-    } else {
-      const datos = {
-        nt: nt.value,
-        etiqueta: etiqueta.value,
-        titulo: titulo.value,
-        autor: autor.value,
-        categoria: categoria.value,
-        estado: estado.value,
-        ejemplares: Number(ejemplares.value),
-      };
-      
-      await librosService.crearLibro(datos);
+
+      // Obtenemos la URL pública de la imagen recién subida
+      const { data: publicURLData } = supabase.storage
+        .from('swigb-files')
+        .getPublicUrl(fileName);
+
+      urlImagenFinal = publicURLData.publicUrl;
     }
+
+    // 3. Preparamos el objeto plano con los datos para enviarlo a Django (JSON)
+    const datosLibro = {
+      nt: nt.value,
+      etiqueta: etiqueta.value,
+      titulo: titulo.value,
+      autor: autor.value,
+      categoria: categoria.value,
+      estado: estado.value,
+      ejemplares: Number(ejemplares.value),
+      foto: urlImagenFinal || null, // Mandamos la URL directa de Supabase o null si no hay foto
+    };
+    
+    await librosService.crearLibro(datosLibro);
     
     exito.value = true;
     setTimeout(() => {
@@ -110,8 +115,8 @@ const agregarLibro = async () => {
       cerrar();
     }, 1500);
   } catch (err: any) {
-    console.error('Error al agregar libro:', err.response?.data);
-    error.value = err.response?.data?.detail || JSON.stringify(err.response?.data) || 'Error al agregar libro';
+    console.error('Error al agregar libro:', err);
+    error.value = err.message || err.response?.data?.detail || 'Error al agregar libro';
   } finally {
     cargando.value = false;
   }
@@ -130,7 +135,6 @@ const cerrar = () => {
   fotoPreview.value = '';
   error.value = '';
   exito.value = false;
-  mostrarDialogUrl.value = false;
   emit('cerrar');
 };
 
@@ -141,6 +145,9 @@ const incrementar = () => {
 const decrementar = () => {
   if (ejemplares.value > 1) ejemplares.value--;
 };
+
+
+
 </script>
 
 <template>
