@@ -69,7 +69,7 @@ const cargarLibro = async () => {
     libro.value = response.data;
     
     if (libro.value) {
-      const lb = libro.value;
+      const lb = libro.value as any; // Para leer tanto foto como imagen
       nt.value = lb.nt;
       etiqueta.value = lb.etiqueta;
       titulo.value = lb.titulo;
@@ -77,7 +77,9 @@ const cargarLibro = async () => {
       categoria.value = lb.categoria;
       ejemplares.value = lb.ejemplares;
       estado.value = lb.estado;
-      fotoPreview.value = lb.foto || '';
+
+      //  Lee 'foto' O 'imagen' (en caso de que Django envíe la URL en 'imagen')
+      fotoPreview.value = lb.foto || lb.imagen || '';
     }
   } catch (err: any) {
     error.value = 'Error al cargar el libro';
@@ -99,6 +101,7 @@ const handleFoto = (event: Event) => {
   
   fotoFile.value = file;
   
+  // ✅ Genera la vista previa local mientras el usuario decide guardar
   const reader = new FileReader();
   reader.onload = (e) => {
     fotoPreview.value = e.target?.result as string;
@@ -116,7 +119,9 @@ const guardarCambios = async () => {
   error.value = '';
   
   try {
-    let urlImagenFinal = libro.value?.foto || ''; // Mantenemos la foto actual por defecto
+    // 1. Mantenemos la foto actual por defecto (revisando ambas variables por si acaso)
+    const lb = libro.value as any;
+    let urlImagenFinal = lb?.foto || lb?.imagen || ''; 
 
     // 2. Si el usuario seleccionó una NUEVA foto, la subimos a Supabase
     if (fotoFile.value) {
@@ -124,7 +129,7 @@ const guardarCambios = async () => {
       const fileName = `${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('swigb-files') // Nombre de tu bucket en Supabase
+        .from('swigb-files')
         .upload(fileName, fotoFile.value);
 
       if (uploadError) {
@@ -133,13 +138,13 @@ const guardarCambios = async () => {
 
       // Obtenemos su URL pública
       const { data: publicURLData } = supabase.storage
-        .from('swigb-files') // Nombre de tu bucket en Supabase
+        .from('swigb-files')
         .getPublicUrl(fileName);
 
       urlImagenFinal = publicURLData.publicUrl;
     }
 
-    // 3. Preparamos el objeto plano con la URL de Supabase para enviarlo a Django
+    // 3. Preparamos el objeto para enviarlo a Django
     const datosActualizados = {
       nt: nt.value,
       etiqueta: etiqueta.value,
@@ -148,11 +153,12 @@ const guardarCambios = async () => {
       categoria: categoria.value,
       ejemplares: Number(ejemplares.value),
       estado: estado.value,
-      foto: urlImagenFinal || null, // Mandamos la URL en formato texto
+      foto: urlImagenFinal || null, // Enviamos el string con la URL de Supabase
     };
 
     await librosService.actualizarLibro(props.libroId, datosActualizados);
     exito.value = true;
+    
     setTimeout(() => {
       modoEdicion.value = false;
       cargarLibro();
@@ -168,11 +174,10 @@ const guardarCambios = async () => {
     guardando.value = false;
   }
 };
-
 const cancelarEdicion = () => {
   modoEdicion.value = false;
   if (libro.value) {
-    const lb = libro.value;
+    const lb = libro.value as any;
     nt.value = lb.nt;
     etiqueta.value = lb.etiqueta;
     titulo.value = lb.titulo;
@@ -180,7 +185,9 @@ const cancelarEdicion = () => {
     categoria.value = lb.categoria;
     ejemplares.value = lb.ejemplares;
     estado.value = lb.estado;
-    fotoPreview.value = lb.foto || '';
+    
+    // ✅ Restaura la foto original al cancelar
+    fotoPreview.value = lb.foto || lb.imagen || '';
     fotoFile.value = null;
   }
 };

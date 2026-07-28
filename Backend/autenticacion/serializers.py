@@ -13,11 +13,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     def get_foto(self, obj):
         try:
-            if obj.perfil.foto:
-                request = self.context.get('request')
-                if request:
-                    return request.build_absolute_uri(obj.perfil.foto.url)
-                return obj.perfil.foto.url
+            if obj.perfil and obj.perfil.foto:
+                # obj.perfil.foto ya es un string con la URL de Supabase
+                return str(obj.perfil.foto)
         except PerfilUsuario.DoesNotExist:
             return None
         return None

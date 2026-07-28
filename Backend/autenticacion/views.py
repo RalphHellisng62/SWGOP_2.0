@@ -36,7 +36,6 @@ def perfil(request):
     serializer = UsuarioSerializer(request.user, context={'request': request})
     return Response(serializer.data)
 
-
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def actualizar_perfil(request):
@@ -54,14 +53,16 @@ def actualizar_perfil(request):
     except PerfilUsuario.DoesNotExist:
         perfil = PerfilUsuario.objects.create(usuario=usuario)
     
-    if 'foto' in request.FILES:
+    # Recibimos la URL desde request.data o el archivo si viniera binario
+    if 'foto' in request.data:
+        perfil.foto = request.data['foto']
+    elif 'foto' in request.FILES:
         perfil.foto = request.FILES['foto']
     
     perfil.save()
     
     serializer = UsuarioSerializer(usuario, context={'request': request})
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
