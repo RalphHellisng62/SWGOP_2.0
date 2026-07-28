@@ -133,7 +133,7 @@ const guardarPerfil = async () => {
       const fileName = `perfil_${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('media') // Nombre de tu bucket
+        .from('swigb-files') // Nombre de tu bucket
         .upload(fileName, fotoFile.value);
 
       if (uploadError) {
@@ -142,7 +142,7 @@ const guardarPerfil = async () => {
 
       // Obtenemos su URL pública
       const { data: publicURLData } = supabase.storage
-        .from('media')
+        .from('swigb-files')
         .getPublicUrl(fileName);
 
       urlImagenFinal = publicURLData.publicUrl;
