@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-# Ya no necesitas importar PIL ni BytesIO si confías en Cloudinary para la optimización
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
 
 class Libro(models.Model):
     ESTADO_CHOICES = [
@@ -30,6 +31,7 @@ class Libro(models.Model):
     # Usando el ImageField estándar de Django, pero ahora Cloudinary_storage lo interceptará limpio
     foto = models.ImageField(
         upload_to='libros/', 
+        storage=MediaCloudinaryStorage(),
         null=True,
         blank=True
     )

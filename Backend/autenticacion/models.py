@@ -2,11 +2,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
 import secrets
+
 
 class PerfilUsuario(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    foto = models.ImageField(upload_to='perfiles/', null=True, blank=True)
+    foto = models.ImageField(upload_to='perfiles/', storage=MediaCloudinaryStorage(), null=True, blank=True)
 
     def __str__(self):
         return f"Perfil de {self.usuario.username}"
