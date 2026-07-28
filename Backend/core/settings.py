@@ -24,7 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     
     'rest_framework',
     'corsheaders',
@@ -34,8 +36,7 @@ INSTALLED_APPS = [
     'prestamos',
     'autenticacion',
     
-    'cloudinary_storage',
-    'cloudinary',
+    
 ]
 
 MIDDLEWARE = [
@@ -156,4 +157,17 @@ cloudinary.config(
     api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Definición moderna para Django 4.2+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Compatibilidad con versiones anteriores
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
