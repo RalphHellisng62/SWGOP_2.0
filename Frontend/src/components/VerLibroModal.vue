@@ -108,7 +108,6 @@ const handleFoto = (event: Event) => {
   };
   reader.readAsDataURL(file);
 };
-
 const guardarCambios = async () => {
   if (!nt.value || !titulo.value || !autor.value) {
     error.value = 'Completa los campos obligatorios';
@@ -119,7 +118,7 @@ const guardarCambios = async () => {
   error.value = '';
   
   try {
-    // 1. Mantenemos la foto actual por defecto (revisando ambas variables por si acaso)
+    // 1. Mantenemos la foto actual por defecto (revisando ambas propiedades)
     const lb = libro.value as any;
     let urlImagenFinal = lb?.foto || lb?.imagen || ''; 
 
@@ -128,23 +127,30 @@ const guardarCambios = async () => {
       const fileExt = fotoFile.value.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
 
+      // Intentamos subir la imagen
       const { error: uploadError } = await supabase.storage
         .from('swigb-files')
         .upload(fileName, fotoFile.value);
 
       if (uploadError) {
-        throw new Error(`Error al subir la imagen a Supabase: ${uploadError.message}`);
+        console.error('Error de Supabase al subir:', uploadError);
+        throw new Error(`Error en Supabase: ${uploadError.message}`);
       }
 
-      // Obtenemos su URL pública
+      // Obtenemos la URL pública
       const { data: publicURLData } = supabase.storage
         .from('swigb-files')
         .getPublicUrl(fileName);
 
+      if (!publicURLData?.publicUrl) {
+        throw new Error('No se pudo generar la URL pública de la imagen en Supabase');
+      }
+
       urlImagenFinal = publicURLData.publicUrl;
+      console.log('✅ URL de Supabase obtenida correctamente:', urlImagenFinal);
     }
 
-    // 3. Preparamos el objeto para enviarlo a Django
+    // 3. Preparamos el objeto plano para enviarlo a Django
     const datosActualizados = {
       nt: nt.value,
       etiqueta: etiqueta.value,
@@ -153,9 +159,10 @@ const guardarCambios = async () => {
       categoria: categoria.value,
       ejemplares: Number(ejemplares.value),
       estado: estado.value,
-      foto: urlImagenFinal || null, // Enviamos el string con la URL de Supabase
+      foto: urlImagenFinal || null, // Se envía la URL o null si no hay imagen
     };
 
+    // 4. Enviamos a Django
     await librosService.actualizarLibro(props.libroId, datosActualizados);
     exito.value = true;
     
@@ -174,6 +181,7 @@ const guardarCambios = async () => {
     guardando.value = false;
   }
 };
+
 const cancelarEdicion = () => {
   modoEdicion.value = false;
   if (libro.value) {
