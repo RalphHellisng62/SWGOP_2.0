@@ -117,13 +117,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuración moderna de Storages con WhiteNoise para archivos estáticos
+# Usar Cloudinary para media
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Static files (no necesario en Render, pero déjalo simple)
 STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.CloudinaryMediaStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
 }
 
