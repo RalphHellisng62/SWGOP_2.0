@@ -28,7 +28,7 @@ class Libro(models.Model):
     categoria = models.CharField(max_length=50, choices=CATEGORIA_CHOICES, default='000-Generalidades')
     ejemplares = models.IntegerField(default=1)
     
-    foto = models.URLField(max_length=500, null=True, blank=True)
+    foto = models.ImageField(upload_to='libros/', null=True, blank=True)
     
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='enInventario')
     registrado_en = models.DateTimeField(auto_now_add=True)

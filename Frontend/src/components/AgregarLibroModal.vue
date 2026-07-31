@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { librosService } from '../services/librosService';
-import { supabase } from '../services/supabaseClient'; // <--- 1. Importas tu cliente de Supabase
 import { ArrowLeftCircleIcon, FolderArrowDownIcon, PhotoIcon } from '@heroicons/vue/24/solid';
 
 const emit = defineEmits<{
@@ -56,6 +55,7 @@ const handleFotoArchivo = (event: Event) => {
   reader.readAsDataURL(file);
 };
 
+
 const agregarLibro = async () => {
   error.value = '';
   
@@ -72,42 +72,24 @@ const agregarLibro = async () => {
   cargando.value = true;
   
   try {
-    let urlImagenFinal = '';
-
-    // 2. Si el usuario seleccionó una foto, la subimos primero a Supabase Storage
-    if (fotoFile.value) {
-      const fileExt = fotoFile.value.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('swigb-files') // Nombre de tu bucket en Supabase
-        .upload(fileName, fotoFile.value);
-
-      if (uploadError) {
-        throw new Error(`Error al subir la imagen a Supabase: ${uploadError.message}`);
-      }
-
-      // Obtenemos la URL pública de la imagen recién subida
-      const { data: publicURLData } = supabase.storage
-        .from('swigb-files')
-        .getPublicUrl(fileName);
-
-      urlImagenFinal = publicURLData.publicUrl;
-    }
-
-    // 3. Preparamos el objeto plano con los datos para enviarlo a Django (JSON)
-    const datosLibro = {
-      nt: nt.value,
-      etiqueta: etiqueta.value,
-      titulo: titulo.value,
-      autor: autor.value,
-      categoria: categoria.value,
-      estado: estado.value,
-      ejemplares: Number(ejemplares.value),
-      foto: urlImagenFinal || null, // Mandamos la URL directa de Supabase o null si no hay foto
-    };
+    // 🎯 Crear FormData - Django + Cloudinary se encargan del resto
+    const formData = new FormData();
+    formData.append('nt', nt.value);
+    formData.append('etiqueta', etiqueta.value);
+    formData.append('titulo', titulo.value);
+    formData.append('autor', autor.value);
+    formData.append('categoria', categoria.value);
+    formData.append('estado', estado.value);
+    formData.append('ejemplares', String(ejemplares.value));
     
-    await librosService.crearLibro(datosLibro);
+    // Si hay foto, agrégala al FormData
+    if (fotoFile.value instanceof File) {
+      console.log('📸 Agregando foto al FormData:', fotoFile.value.name);
+      formData.append('foto', fotoFile.value);
+    }
+    
+    // Enviar a Django - Cloudinary lo maneja automáticamente
+    await librosService.crearLibro(formData);
     
     exito.value = true;
     setTimeout(() => {
@@ -121,6 +103,7 @@ const agregarLibro = async () => {
     cargando.value = false;
   }
 };
+
 
 const cerrar = () => {
   nt.value = '';

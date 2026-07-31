@@ -1,9 +1,22 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import dj_database_url
+
 
 load_dotenv()
+
+import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +41,9 @@ INSTALLED_APPS = [
     'libros',
     'prestamos',
     'autenticacion',
+    
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -104,7 +120,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuración moderna de Storages con WhiteNoise para archivos estáticos
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.CloudinaryMediaStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
